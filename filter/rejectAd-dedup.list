@@ -1,0 +1,1367 @@
+# fmz200 rejectAd 去重表（QX 格式）
+# 来源：fmz200/wool_scripts Loon/rule/rejectAd.list，减去 blackmatrix7/ios_rule_script QX Advertising.list 与 Hijacking.list 已覆盖的条目
+# 覆盖判定：精确命中 + 后缀包含（黑矩阵已有某后缀则其下子域名不再收）+ IP 网段包含；关键词仅精确命中才算覆盖（保守口径）
+# 生成日期：2026-11-04；fmz200 原表条目 2748 条，保留 287 条，去掉 2461 条
+# 用法（QX filter_remote）：raw.githubusercontent.com/elvis0516/Rules/main/filter/rejectAd-dedup.list，force-policy=🛑 广告拦截，update-interval=172800，enabled=true（已是 QX 格式，无需 opt-parser）
+
+#!name=广告拦截合集-规则
+#!desc=(F)针对部分APP和小程序广告进行拦截，某些APP要清除缓存或者重新安装APP，拦截广告才会生效！可以配置到规则或者插件
+#!author=奶思
+#!homepage=https://github.com/fmz200/wool_scripts
+#!icon=https://raw.githubusercontent.com/fmz200/wool_scripts/main/icons/gif/naisi-01.gif
+#!raw-url=https://github.com/fmz200/wool_scripts/raw/main/Loon/rule/rejectAd.list
+#!tg-channel=https://t.me/inaisi
+#!tag = 去广告, fmz200
+#!system = iOS, iPadOS
+#!system_version =
+#!loon_version =
+#!date=2026-04-26 09:30:00
+#!support=约9392行
+#!proxy-select=REJECT
+#############################################
+# "REJECT"        策略返回 HTTP 状态码 404,不附带任何额外内容
+# "REJECT-200"    策略返回 HTTP 状态码 200,不附带任何额外内容
+# "REJECT-img"    策略返回 HTTP 状态码 200,同时附带 1px gif
+# "REJECT-dict"   策略返回 HTTP 状态码 200,同时附带一个空的 JSON 对象
+# "REJECT-array"  策略返回 HTTP 状态码 200,同时附带一个空的 JSON 数组
+# 1.2.3.4/24      /24表示网络的子网掩码长度，即前24位是网络部分，后8位是主机部分。这种表示法常用于描述特定范围内的IP地址
+# 6.7.8.9/32      /32表示整个32位的IP地址都用于表示这一个地址，即单独的一个IP地址
+#############################################
+
+
+
+# >>>>>>>>>>>>>>> ✅ 0 ✅ <<<<<<<<<<<<<<
+
+
+
+# >>>>>>>>>>>>>>> ✅ 1 ✅ <<<<<<<<<<<<<<
+# > 12123
+
+# > 17173（网络游戏门户网站）
+
+# > 178游戏网
+
+# > 18183游戏网
+
+# > 1905电影网
+
+
+
+# >>>>>>>>>>>>>>> ✅ 2 ✅ <<<<<<<<<<<<<<
+# > 2345网址导航
+
+
+
+# >>>>>>>>>>>>>>> ✅ 3 ✅ <<<<<<<<<<<<<<
+# > 360
+
+# > 365日历
+HOST-SUFFIX,ad.365rili.com
+
+# > 39健康网
+
+
+
+# >>>>>>>>>>>>>>> ✅ 4 ✅ <<<<<<<<<<<<<<
+
+
+
+# >>>>>>>>>>>>>>> ✅ 5 ✅ <<<<<<<<<<<<<<
+# > 51CTO学堂
+
+# > 58同城
+
+# > 58汽车
+
+
+
+# >>>>>>>>>>>>>>> ✅ 6 ✅ <<<<<<<<<<<<<<
+
+
+
+# >>>>>>>>>>>>>>> ✅ 7 ✅ <<<<<<<<<<<<<<
+
+
+
+# >>>>>>>>>>>>>>> ✅ 8 ✅ <<<<<<<<<<<<<<
+
+
+
+# >>>>>>>>>>>>>>> ✅ 9 ✅ <<<<<<<<<<<<<<
+# 9to5Mac
+# 网页版去广告
+HOST-SUFFIX,spot.im
+HOST-SUFFIX,temu.com
+HOST-SUFFIX,ninthdecimal.com
+HOST-SUFFIX,aidemsrv.com
+HOST-SUFFIX,mradx.net
+
+
+
+# >>>>>>>>>>>>>>> ✅ A ✅ <<<<<<<<<<<<<<
+# > Adobe
+# Marketo
+
+# > Adobe Flash China Special Edition
+
+# > Akamai
+
+# > Apple
+HOST,advertising.apple.com
+HOST,api-adservices.apple.com
+HOST,apple.comscoreresearch.com
+HOST,banners.itunes.apple.com
+HOST,iad.apple.com
+HOST,iadcontent.apple.com
+HOST,iadmoo.apple.com
+HOST,iadworkbench.apple.com
+HOST,launch.apple.com
+HOST,metrics.apple.com
+HOST,qwapi.apple.com
+HOST,securemetrics.apple.com
+HOST,webproxy-advp.iad-apple.com
+HOST,webproxy-advp.iad-apple.com.akadns.net
+HOST-SUFFIX,advp.apple.com
+HOST-SUFFIX,iadsdk.apple.com
+# 安全浏览限制解除
+HOST,proxy.safebrowsing.apple
+HOST,token.safebrowsing.apple
+HOST-SUFFIX,safebrowsing.apple
+
+# > Amazon
+HOST-SUFFIX,amazon-adsystem.com
+
+# > AOL（美国在线）
+
+# > 爱拍
+
+# > 爱卡汽车网
+
+# > 阿里系
+# DOMAIN-SUFFIX, alistatic.cn
+# DOMAIN-SUFFIX, cnzz.cn
+# DOMAIN-SUFFIX, sinaaliyun.cn
+# DOMAIN-SUFFIX, taobaoaliyun.cn
+# DOMAIN-SUFFIX, taobayun.cn
+# DOMAIN-SUFFIX, ucaliyun.cn
+# DOMAIN-SUFFIX, p4p.1688.com
+# DOMAIN-SUFFIX, aecpm.alicdn.com
+# DOMAIN-SUFFIX, afp.alicdn.com
+# DOMAIN-SUFFIX, afpmm.alicdn.com
+# DOMAIN-SUFFIX, asearch.alicdn.com
+# DOMAIN-SUFFIX, atanx.alicdn.com
+# DOMAIN-SUFFIX, atanx2.alicdn.com
+# DOMAIN-SUFFIX, gen.alicdn.com
+# DOMAIN-SUFFIX, gma.alicdn.com
+# DOMAIN-SUFFIX, nbsdk-baichuan.alicdn.com
+# DOMAIN-SUFFIX, strip.alicdn.com
+# DOMAIN-SUFFIX, unidesk.alicdn.com
+# DOMAIN-SUFFIX, g.aligames.com
+# DOMAIN-SUFFIX, optimus-ads.amap.com.w.alikunlun.com
+# DOMAIN-SUFFIX, osfota.cdn.aliyun.com
+# DOMAIN-SUFFIX, oa-panther.data.aliyun.com
+# DOMAIN-SUFFIX, oss-accelerate.aliyuncs.com
+# DOMAIN-SUFFIX, dressimage.img-cn-beijing.aliyuncs.com
+# DOMAIN-SUFFIX, adash.man.aliyuncs.com
+# DOMAIN-SUFFIX, ooss.oss.aliyuncs.com
+# DOMAIN-SUFFIX, cc58.oss-cn-beijing.aliyuncs.com
+# DOMAIN-SUFFIX, img-dsp.oss-cn-beijing.aliyuncs.com
+# DOMAIN-SUFFIX, xz-development.oss-cn-beijing.aliyuncs.com
+# DOMAIN-SUFFIX, com-eonsun-owl.oss-cn-hangzhou.aliyuncs.com
+# DOMAIN-SUFFIX, com-eonsun-owl-user.oss-cn-hangzhou.aliyuncs.com
+# DOMAIN-SUFFIX, cootek-dialer-download.oss-cn-hangzhou.aliyuncs.com
+# DOMAIN-SUFFIX, fs-uc-nearme-com-cn.oss-cn-hangzhou.aliyuncs.com
+# DOMAIN-SUFFIX, cdn-ads.oss-cn-shanghai.aliyuncs.com
+# DOMAIN-SUFFIX, jiayi1.oss-cn-shanghai.aliyuncs.com
+# DOMAIN-SUFFIX, aliyuncss.com
+# DOMAIN-SUFFIX, aliyunxin.com
+# DOMAIN-SUFFIX, p4psearch.china.alibaba.com
+# DOMAIN-SUFFIX, crm-eve.b2b.alibaba-inc.com
+# DOMAIN-SUFFIX, huichuan-mc.sm.cn
+# DOMAIN-SUFFIX, image.zzd.sm.cn
+# DOMAIN-SUFFIX, tanx.com
+# DOMAIN-SUFFIX, mmstat.com
+# DOMAIN-SUFFIX, ac.mmstat.com
+# DOMAIN-SUFFIX, go.mmstat.com
+# DOMAIN-SUFFIX, gxb.mmstat.com
+# DOMAIN-SUFFIX, hz.mmstat.com
+# DOMAIN-SUFFIX, p3p.mmstat.com
+# DOMAIN-SUFFIX, res.mmstat.com
+# DOMAIN-SUFFIX, yt.mmstat.com
+# DOMAIN-SUFFIX, tbaocdn.com
+# DOMAIN-SUFFIX, strip.taobaocdn.com
+# DOMAIN-SUFFIX, alog.umeng.co
+# DOMAIN-SUFFIX, alog.umeng.com
+# DOMAIN-SUFFIX, alogs.umeng.com
+# DOMAIN-SUFFIX, ar.umeng.com
+# DOMAIN-SUFFIX, errlog.umeng.com
+# DOMAIN-SUFFIX, plbslog.umeng.com
+# DOMAIN-SUFFIX, ulogs.umeng.com
+# DOMAIN-SUFFIX, alog.umengcloud.com
+# DOMAIN-SUFFIX, alogs.umengcloud.com
+# DOMAIN-SUFFIX, ulogs.umengcloud.com
+# DOMAIN-SUFFIX, hao.uc.cn
+# DOMAIN-SUFFIX, woodpecker.uc.cn
+# DOMAIN-SUFFIX, api.mp.uc.cn
+# DOMAIN-SUFFIX, api.open.uc.cn
+# DOMAIN-SUFFIX, puds.test.uae.uc.cn
+# DOMAIN-SUFFIX, picture.duokan.com
+# DOMAIN-SUFFIX, v2.fm.n.duokanbox.com
+# DOMAIN-SUFFIX, app-monitor.ele.me
+# DOMAIN-SUFFIX, client-api.ele.me
+# DOMAIN-SUFFIX, grand.ele.me
+# DOMAIN-SUFFIX, mobile-pubt.ele.me
+# DOMAIN-SUFFIX, newton-api.ele.me
+
+# > 阿里云
+
+# > 爱奇艺
+HOST,t7z.cupid.iqiyi.com
+HOST-SUFFIX,cupid.iqiyi.com
+HOST-SUFFIX,t7z.cupid.iqiyi.com
+HOST-SUFFIX,api.cupid.iqiyi.com
+HOST-SUFFIX,cupid.iqiyi.com
+HOST-SUFFIX,msga.cupid.iqiyi.com
+
+
+# >>>>>>>>>>>>>>> ✅ B ✅ <<<<<<<<<<<<<<
+# > bshare
+
+# > Braze
+
+# > 百度
+HOST,mobads.baidu.com
+HOST-SUFFIX,mobads.baidu.com
+
+# > 百度地图
+
+# > 百度贴吧
+HOST,180.76.76.200
+# 屏蔽域名dns查询
+IP-CIDR,180.76.76.200/32,no-resolve
+
+# > 百词斩
+HOST,advertise.baicizhan.com
+HOST,advertise.baicizhan.org
+
+# > 百姓网
+
+# > 爆米花
+
+# > 百意
+
+# > BBC
+
+# > Bing
+
+# > 笔趣阁
+
+# > 宝宝树
+
+# > 暴风影音
+
+# > 奔图
+HOST-SUFFIX,ad.pantum.com
+
+# > 崩坏3
+HOST-SUFFIX,ad.bh3.com
+
+
+
+# >>>>>>>>>>>>>>> ✅ C ✅ <<<<<<<<<<<<<<
+# > 财新网
+
+# > CNN
+
+# > CSDN
+
+# > C&J Marketing
+# https://www.zhihu.com/question/46746200
+# 苏州思杰马克丁软件有限公司
+
+# > Camera360
+
+# > 创维
+
+# > 车来了
+
+
+
+# >>>>>>>>>>>>>>> ✅ D ✅ <<<<<<<<<<<<<<
+# > 当当网
+
+# > 斗鱼直播
+
+# > Dr.Peng
+#IP-CIDR, 10.72.25.0/24, no-resolve
+
+# > 叮嗒出行
+
+# > 滴滴青桔
+# 支付界面图片有误杀
+#DOMAIN-KEYWORD, pt-starimg.didistatic.com
+
+# > 懂车帝
+
+# > 懂球帝
+
+# > 抖音
+
+# > 多多视频
+
+# > 豆瓣
+
+# > 朵朵校友圈
+# 微信小程序去广告
+
+# > 盯盯拍
+# 广告联盟已包含
+
+# > 叮咚买菜
+
+# > 东方网
+
+# > 东方财富
+
+# > 电脑之家
+
+
+
+# >>>>>>>>>>>>>>> ✅ E ✅ <<<<<<<<<<<<<<
+# > 饿了么
+
+
+
+# >>>>>>>>>>>>>>> ✅ F ✅ <<<<<<<<<<<<<<
+# > Facebook
+
+# > 番茄小说
+HOST,is-lq.snssdk.com
+HOST,ug-sinfonlinea.bytedance.com
+#DOMAIN, is.snssdk.com
+#DOMAIN, i.snssdk.com
+HOST-SUFFIX,byteorge.com
+# 下面两条误杀严重导致懂车帝无法正常使用
+#DOMAIN-SUFFIX, bytegoofy.com
+#DOMAIN-SUFFIX, bytedance.com
+
+# > 风行网
+
+# > 凤凰新媒体
+
+# > 房天下 (Soufun)
+
+# > 飞常准
+
+
+
+# >>>>>>>>>>>>>>> ✅ G ✅ <<<<<<<<<<<<<<
+# > 勾正数据（GozenData）
+
+# > Go.com
+
+# > 购物党
+
+# > Google
+HOST-SUFFIX,google-analytics.com
+HOST-SUFFIX,doubleclick.net
+HOST-SUFFIX,doubleclick.com
+HOST-SUFFIX,googleadservices.com
+HOST-SUFFIX,googleadsserving.cn
+HOST-SUFFIX,www.googleadservices.com
+HOST-SUFFIX,www.google-analytics.com
+HOST,ads.youtube.com
+HOST-SUFFIX,admob.com
+HOST-SUFFIX,crashlytics.com
+HOST-SUFFIX,pagespeed-mod
+HOST-SUFFIX,e.crashlytics.com
+HOST-SUFFIX,setting.crashlytics.com
+HOST-SUFFIX,settings.crashlytics.com
+
+
+# > 赶集网
+
+# > 光大银行 阳光惠生活
+
+# > 高德地图
+HOST,apiinit.amap.com
+
+# > 广州地铁乘车码
+# 多个广告 感谢CtrlMusic🐓分享
+
+# > 国美电器
+
+# > 国双 (Gridsum)
+HOST-SUFFIX,g.gridsum.com
+
+
+
+# >>>>>>>>>>>>>>> ✅ H ✅ <<<<<<<<<<<<<<
+# > Hao123
+# hao123上网导航
+
+# > 和讯网
+
+# > 环球网
+
+# > HDO
+#DOMAIN-suffix, applovin.com
+#DOMAIN-suffix, applvn.com
+
+# > Huawei AspiegelBot
+
+# > 华为商城
+HOST-SUFFIX,ad.hicloud.com
+
+# > 华数TV
+HOST-SUFFIX,adsystem.wasu.tv
+HOST-SUFFIX,adwasu.tv
+
+# > 湖南卫视
+
+# > 沪江网校
+
+# > 互传
+HOST-SUFFIX,ad.apk.vivo.com.cn
+
+# > 虎扑
+
+# > 虎牙直播
+# 开屏广告
+
+# > 哈啰
+# 大部分图片无法正常加载
+# DOMAIN-KEYWORD, assets.51downapp.cn
+
+# > 黄油相机
+# 开屏广告 感谢#Dragon分享
+
+# > 好游快爆
+HOST-SUFFIX,ad.3839.com
+
+# > 会声会影
+
+
+
+# >>>>>>>>>>>>>>> ✅ I ✅ <<<<<<<<<<<<<<
+
+
+
+# >>>>>>>>>>>>>>> ✅ J ✅ <<<<<<<<<<<<<<
+# > 金融界
+
+# > 驾校一点通
+
+# > 金山词霸
+
+# > 金山系 (Kingsoft)
+HOST-SUFFIX,docer.com
+HOST-SUFFIX,iciba.com
+
+# > 金立 (Gionee)
+
+# > 今日头条
+HOST-KEYWORD,uop.umeng.com
+HOST-SUFFIX,ad.toutiao.com
+HOST-SUFFIX,dm.toutiao.com
+HOST-SUFFIX,dm.pstatp.com
+HOST-SUFFIX,s3a.pstatp.com
+
+# > 京东
+HOST-SUFFIX,policy.jd.com
+HOST-SUFFIX,kepler.jd.com
+HOST-SUFFIX,keplerapi.jd.com
+HOST-SUFFIX,mapi.m.jd.com
+# 屏蔽DNS
+
+# > 建行生活
+# 内置饿了么外卖弹窗
+
+# > 巨潮资讯
+HOST-SUFFIX,ad.cninfo.com.cn
+
+# > 九游
+HOST-SUFFIX,ad.9game.cn
+
+
+
+# >>>>>>>>>>>>>>> ✅ K ✅ <<<<<<<<<<<<<<
+# > 酷6网
+
+# > 快速问医生
+
+# > 快懂百科
+
+# > 快乐广播
+
+# > 快手
+# DOMAIN, js-ad.a.yximgs.com
+
+# > 快压zip
+
+# > 酷狗音乐
+HOST,adserviceretry.kugou.com
+HOST-KEYWORD,adservice.kugou.com
+HOST-SUFFIX,adserviceretry.kugou.com
+HOST-SUFFIX,ad.kugou.com
+
+# > 酷我音乐
+HOST,mobilead.kuwo.cn
+HOST,rich.kuwo.cn
+HOST-SUFFIX,mobilead.kuwo.cn
+HOST-SUFFIX,rich.kuwo.cn
+HOST-SUFFIX,ad.kuwo.cn
+
+# > 酷安
+# 广告联盟已包含
+
+
+
+# >>>>>>>>>>>>>>> ✅ L ✅ <<<<<<<<<<<<<<
+# > 乐居
+
+# > 联想
+
+# > LinkedIn
+
+# > Lycos
+
+# > LinkWiFi
+
+# > 蓝基因
+# 弹窗还在，需要手动关闭
+
+# > 两步路
+HOST-SUFFIX,admobile.top
+
+# > 乐视
+
+# > 乐播投屏
+
+
+
+# >>>>>>>>>>>>>>> ✅ M ✅ <<<<<<<<<<<<<<
+# > MacKeeper
+
+# > Makeding (苏州思杰马克丁)
+
+# > 蘑菇街
+
+# > 猫扑 (Mop)
+
+# > Microsoft
+HOST-SUFFIX,adsyndication.msn.com
+
+# > 妈妈网
+HOST-SUFFIX,ad.mama.cn
+
+# > 美团
+HOST-SUFFIX,analytics.meituan.net
+
+# > 美颜相机
+# 去首页和轮播广告
+
+# > 美图秀秀
+
+# > 美柚
+
+# > 魅族 (Meizu)
+
+# > 买单吧
+
+# > 民生银行
+
+# > 墨迹天气
+HOST,ad.api.moji.com
+HOST-SUFFIX,fds.api.moji.com
+
+# > 咪咕视频
+
+# > 米家
+
+# > 芒果TV
+
+
+# >>>>>>>>>>>>>>> ✅ N ✅ <<<<<<<<<<<<<<
+# > Naver
+
+# > New Relic
+
+
+
+# >>>>>>>>>>>>>>> ✅ O ✅ <<<<<<<<<<<<<<
+# > Openmultimedia
+
+# > Optimix（奥迪美）
+
+# > Oupeng (欧朋)
+
+# > Outfit7（会说话的汤姆猫）
+
+# > OPPO
+
+# > Outlook
+
+
+
+# >>>>>>>>>>>>>>> ✅ P ✅ <<<<<<<<<<<<<<
+# > PPTV
+
+# > Photoable
+
+# > PeanutWiFi
+
+# > 皮皮虾
+# 推荐视频不能预览
+HOST-KEYWORD,log-api.pangolin-sdk-toutiao-b.com
+HOST-KEYWORD,log-api.pangolin-sdk-toutiao.com
+HOST-KEYWORD,api-access.pangolin-sdk-toutiao.com
+
+# > 澎湃新闻
+
+
+
+# >>>>>>>>>>>>>>> ✅ Q ✅ <<<<<<<<<<<<<<
+# > QQ音乐
+HOST,tmead.y.qq.com-no-drop
+HOST,tmeadbak.y.qq.com-no-drop
+
+# > 蜻蜓FM
+
+# > 七猫小说
+HOST,mobads.baidu.com
+
+# > 汽车之家
+HOST,adproxy.autohome.com.cn
+HOST,applogapi.autohome.com.cn
+HOST,adm3.autoimg.cn
+HOST-SUFFIX,adm3.autoimg.cn
+HOST-SUFFIX,adproxy.autohome.com.cn
+HOST-SUFFIX,applogapi.autohome.com.cn
+
+# > 齐鲁网
+
+
+
+# >>>>>>>>>>>>>>> ✅ R ✅ <<<<<<<<<<<<<<
+# > 人人视频
+HOST-SUFFIX,ad.rr.tv
+
+# > 人民网
+
+
+
+# >>>>>>>>>>>>>>> ✅ S ✅ <<<<<<<<<<<<<<
+# > Sape
+
+# > Soul
+IP-CIDR,47.97.215.55/32,no-resolve
+IP-CIDR,47.99.42.29/32,no-resolve
+IP-CIDR,120.27.235.201/32,no-resolve
+IP-CIDR,121.196.197.147/32,no-resolve
+
+# > Snapchat
+
+# > 盛趣游戏
+
+# > 苏宁易购
+
+# > 搜狐
+
+# > 搜狗
+# 屏蔽京东和搜狗收集信息 @jFrecht
+
+# > 搜狗输入法
+# DOMAIN-SUFFIX, business-cdn.shouji.sogou.com
+HOST-SUFFIX,push-service-ios.sginput.qq.com
+
+# > 深圳通
+# 微信小程序
+HOST-SUFFIX,wxsnsdythumb.wxs.qq.com
+
+# > 收钱吧
+# 买单小程序去广告
+
+# > 什么值得买
+HOST,acs4baichuan.m.taobao.com
+HOST,msg.umengcloud.com
+HOST,sec.umeng.com
+HOST,ulogs.umeng.com
+
+# > 手机中国
+
+# > 数盟 (Shuzilm)
+
+# > 闪萌
+HOST-SUFFIX,ad.weshineapp.com
+
+# > 世纪佳缘
+HOST-SUFFIX,ad.jiayuan.com
+
+# > 书旗小说
+
+
+
+# >>>>>>>>>>>>>>> ✅ T ✅ <<<<<<<<<<<<<<
+# > Tanwan (贪玩)
+
+# > 淘淘搜
+
+# > Tumblr
+
+# > Twitch
+
+# > Turn
+
+# > Twitter
+
+# > TubeMax
+HOST-SUFFIX,adjust.com
+HOST-SUFFIX,applovin.com
+
+# > Talkatone
+HOST-SUFFIX,jampp.com
+HOST-SUFFIX,fonts.gstatic.cn
+HOST-SUFFIX,pomodoromedia.com
+HOST-SUFFIX,trustarc.com
+HOST-SUFFIX,truste.com
+HOST-SUFFIX,inhousedsp.com
+HOST-SUFFIX,i.sng.link
+HOST-SUFFIX,richmob.cn
+HOST-SUFFIX,amazon-adsystem.com
+HOST-SUFFIX,ads.inmobi.com
+#DOMAIN-SUFFIX,akamaized.net
+HOST-SUFFIX,googleadsserving.cn
+HOST-SUFFIX,googleads.g.doubleclick.net
+HOST-SUFFIX,4dvertible.com
+
+# > 天神
+HOST,errlog.umeng.com
+HOST,novel.pangolin-sdk-toutiao.com
+
+# > 淘宝
+HOST,tunion-api.m.taobao.com
+HOST-SUFFIX,acs4baichuan.m.taobao.com
+HOST-SUFFIX,tunion-api.m.taobao.com
+HOST-SUFFIX,click.mz.simba.taobao.com
+HOST-SUFFIX,click.simba.taobao.com
+
+# >  腾讯系
+HOST-SUFFIX,adsense.html5.qq.com
+
+# > 腾讯智慧
+
+# > 同花顺
+
+# > 迅雷
+
+# > 团油
+
+# > 同盾
+
+# > 太平洋电脑
+
+# > 天天看看
+
+# > 途虎养车
+HOST,analytics.tuhu.com
+HOST,ta.tuhu.cn
+
+
+
+# >>>>>>>>>>>>>>> ✅ U ✅ <<<<<<<<<<<<<<
+# > Urban Airship
+
+# > UC浏览器
+HOST-SUFFIX,clickc.admaster.com.cn
+HOST-SUFFIX,fans.m.tmall.com
+HOST-SUFFIX,r1.ykimg.com
+HOST-SUFFIX,v.admaster.com.cn
+HOST-SUFFIX,server.m.pp.cn
+HOST-SUFFIX,puds.ucweb.com
+HOST-SUFFIX,log.cs.pp.cn
+HOST-SUFFIX,applog.uc.cn
+HOST-SUFFIX,a.9game.cn
+HOST-SUFFIX,track.uc.cn
+HOST-SUFFIX,adtrack.ucweb.com
+HOST-SUFFIX,utp-dmp.ucweb.com
+HOST-SUFFIX,utp.ucweb.com
+HOST-SUFFIX,huichuan.sm.cn
+HOST-SUFFIX,ynuf.alipay.com
+HOST-SUFFIX,pdds.ucweb.com
+HOST-SUFFIX,cpu.baidu.com
+HOST-SUFFIX,caclick.baidu.com
+HOST,gj.applog.uc.cn
+HOST,gj.track.uc.cn
+HOST,gjapplog.uc.cn
+HOST,gjtrack.uc.cn
+HOST-SUFFIX,applog.uc.cn
+HOST-SUFFIX,track.uc.cn
+HOST-SUFFIX,wmedia-track.uc.cn
+
+# > Unity Ads
+
+
+
+# >>>>>>>>>>>>>>> ✅ V ✅ <<<<<<<<<<<<<<
+# > Vivo
+HOST,adsdk.vivo.com.cn
+
+# > VIVO商城
+
+
+
+# >>>>>>>>>>>>>>> ✅ W ✅ <<<<<<<<<<<<<<
+# > Whale Cloud (鲸云)
+
+# > Waps（无线广告交易中心）
+
+# > Wostore (联通沃商店)
+
+# > WiFi万能钥匙
+HOST-KEYWORD,dc.51y5.net
+HOST-KEYWORD,push-dc.51y5.net
+HOST-KEYWORD,static.wkanx.com
+# 万能钥匙专业版
+# 感谢#All in 梭哈分享
+# 去除导航栏免费短剧
+
+# > 网易
+HOST-SUFFIX,crashlytics.163.com
+
+# > 威锋
+# 广告联盟已包含
+#DOMAIN-SUFFIX, aoodoo.feng.com
+#DOMAIN-SUFFIX, push.feng.com
+#DOMAIN-SUFFIX, aoodoo.weiphone.com
+
+# > 豌豆荚
+
+# > 唯品会
+
+# > 歪麦霸王餐
+# 去开屏 
+
+
+
+# >>>>>>>>>>>>>>> ✅ X ✅ <<<<<<<<<<<<<<
+# > 讯飞输入法
+
+# > 喜马拉雅
+HOST-SUFFIX,adse-v2.ximalaya.com
+HOST-SUFFIX,open.ximalaya.com
+HOST-SUFFIX,upos-app.ximalaya.com
+
+# > 小米
+HOST-KEYWORD,xiaoqiang
+HOST-SUFFIX,admob.xiaomi.com
+HOST-SUFFIX,data.mistat.xiaomi.com
+HOST-SUFFIX,api.sec.miui.com
+HOST-SUFFIX,api.jr.mi.com
+
+# > 小小影视
+
+# > 小利生活
+
+# > 小爱音箱
+
+# > 晓晓优选
+HOST-SUFFIX,adintl.cn
+HOST-SUFFIX,zhangyuyidong.cn
+HOST-SUFFIX,1sapp.com
+HOST-SUFFIX,adbiding.com
+HOST-SUFFIX,xwpbj.com
+HOST-SUFFIX,qiyukf.com
+HOST-SUFFIX,qttunion.com
+HOST-SUFFIX,ad.richmob.cn
+HOST-SUFFIX,yunxinfw.com
+HOST-SUFFIX,bridgeoos.com
+HOST-SUFFIX,cloooud.com
+HOST-SUFFIX,baihemob.com
+HOST-SUFFIX,ad.bwton.com
+HOST-SUFFIX,api.wxcjgg.cn
+HOST-SUFFIX,shunchangzhixing.com
+IP-CIDR,114.132.165.205/32,no-resolve
+
+# > 新浪
+
+# > 新华网
+
+# > 新民网
+
+# > 寻医问药
+
+# > 雪球
+HOST-SUFFIX,ad.xueqiu.com
+# 可以去掉倒计时，但是误杀很多图片，默认关闭
+# DOMAIN-KEYWORD, xqimg.imedao.com
+
+
+
+# >>>>>>>>>>>>>>> ✅ Y ✅ <<<<<<<<<<<<<<
+# > Yahoo
+HOST-SUFFIX,adss.yahoo.com
+HOST-SUFFIX,beap-bc.yahoo.com
+HOST-SUFFIX,comet.yahoo.com
+HOST-SUFFIX,geo.yahoo.com
+HOST-SUFFIX,marketingsolutions.yahoo.com
+HOST-SUFFIX,p3p.yahoo.com
+HOST-SUFFIX,themis.yahoo.com
+HOST-SUFFIX,ysm.yahoo.com
+HOST-SUFFIX,us.adserver.yahoo.com
+HOST-SUFFIX,beap.adss.yahoo.com
+HOST-SUFFIX,clicks.beap.bc.yahoo.com
+HOST-SUFFIX,aliunion.cn.yahoo.com
+HOST-SUFFIX,cm.p4p.cn.yahoo.com
+HOST-SUFFIX,n.gemini.yahoo.com
+HOST-SUFFIX,doubleplay-conf-yql.media.yahoo.com
+HOST-SUFFIX,ws.progrss.yahoo.com
+HOST-SUFFIX,analytics.query.yahoo.com
+HOST-SUFFIX,locdrop.query.yahoo.com
+HOST-SUFFIX,onepush.query.yahoo.com
+HOST-SUFFIX,iframe.travel.yahoo.com
+HOST-SUFFIX,m.yap.yahoo.com
+HOST-SUFFIX,pr.ybp.yahoo.com
+HOST-SUFFIX,pr-bh.ybp.yahoo.com
+HOST-SUFFIX,js-apac-ss.ysm.yahoo.com
+HOST-SUFFIX,adserver.yahoo.com
+HOST-SUFFIX,adspecs.yahoo.com
+HOST-SUFFIX,advertising.yahoo.com
+HOST-SUFFIX,gemini.yahoo.com
+HOST,ads.auctions.yahoo.com
+HOST,ads.finance.yahoo.com
+HOST,ads.yahoo.com
+
+# > 一点资讯
+
+# > 音悦Tai
+
+# > 游迅网
+
+# > YY直播平台
+
+# > 亚信科技
+HOST-SUFFIX,ad.asiainfo.com
+
+# > 悠易互通
+
+# > 云闪付
+
+# > 云之家
+HOST-SUFFIX,ad.yunzhijia.com
+
+# > 优酷
+# DOMAIN-SUFFIX, gdt.qq.com
+# DOMAIN-SUFFIX, sdk.e.qq.com
+# DOMAIN-SUFFIX, mazu.m.qq.com
+# DOMAIN-SUFFIX, snowflake.qq.com
+# DOMAIN-SUFFIX, acz.youku.com
+# DOMAIN-SUFFIX, cad.youku.com
+# DOMAIN-SUFFIX, sjarvis.taobao.com
+# DOMAIN, iyes.youku.com
+# DOMAIN, mc.atm.youku.com
+# DOMAIN-SUFFIX, actives.youku.com
+# DOMAIN-SUFFIX, store.tv.api.3g.youku.com
+# DOMAIN-SUFFIX, store.xl.api.3g.youku.com
+# DOMAIN-SUFFIX, a-dxk.play.api.3g.youku.com
+# DOMAIN-SUFFIX, b.smartvideo.youku.com
+# DOMAIN-SUFFIX, c.yes.youku.com
+# DOMAIN-SUFFIX, das.api.youku.com
+# DOMAIN-SUFFIX, das.mobile.youku.com
+# DOMAIN-SUFFIX, dev-push.m.youku.com
+# DOMAIN-SUFFIX, push.m.youku.com
+# DOMAIN-SUFFIX, sdk.m.youku.com
+# DOMAIN-SUFFIX, dl.g.youku.com
+# DOMAIN-SUFFIX, dmapp.youku.com
+# DOMAIN-SUFFIX, hudong.pl.youku.com
+# DOMAIN-SUFFIX, huodong.pl.youku.com
+# DOMAIN-SUFFIX, huodong.vip.youku.com
+# DOMAIN-SUFFIX, hz.youku.com
+# DOMAIN-SUFFIX, lstat.youku.com
+# DOMAIN-SUFFIX, m.yes.youku.com
+# DOMAIN-SUFFIX ,mobilemsg.youku.com
+# DOMAIN-SUFFIX, msg.youku.com
+# DOMAIN-SUFFIX, myes.youku.com
+# DOMAIN-SUFFIX, stat.youku.com
+# DOMAIN-SUFFIX, urchin.lstat.youku.com
+# DOMAIN-SUFFIX, val.api.youku.com
+# DOMAIN-SUFFIX, wan.youku.com
+# DOMAIN-SUFFIX, ykatr.youku.com
+# DOMAIN-SUFFIX, ykrec.youku.com
+
+# > 游民星空
+
+# > 易车
+
+# > 易查
+
+# > 有米
+
+# > 央视网
+HOST-SUFFIX,ad-cdn.cctv.com
+HOST-SUFFIX,ad-cdn_core.cctv.com
+HOST-SUFFIX,ad_core.cctv.com
+HOST-SUFFIX,ad_m.cctv.com
+HOST-SUFFIX,adguanggao.eee114.com
+
+# > 央视影音 (CBox)
+
+# > 一刻相册
+# 广告联盟已包含
+
+# > 元聚网络（漫画岛，追书神器，甜瓜小说）
+
+# > 艺龙
+
+# > 悠视网
+
+# > 游久网
+
+
+
+# >>>>>>>>>>>>>>> ✅ Z ✅ <<<<<<<<<<<<<<
+# > ZAKER新闻
+
+# > 知乎
+HOST,appcloud.zhihu.com
+HOST,appcloud2.in.zhihu.com
+HOST,mqtt.zhihu.com
+HOST,sugar.zhihu.com
+HOST,crash2.zhihu.com
+HOST,118.89.204.198
+IP-CIDR,118.89.204.198/32,no-resolve
+IP6-CIDR,2402:4e00:1200:ed00:0:9089:6dac:96b6/128,no-resolve
+
+# > 中关村
+HOST-SUFFIX,js.zol.com.cn
+
+# > 中国移动
+
+# > 中国移动云盘
+
+# > 中国联通
+
+# > 中国电信
+
+# > 中信银行
+# DOMAIN-SUFFIX, sis.jpush.io
+# DOMAIN-SUFFIX, s.jpush.cn
+# DOMAIN-SUFFIX, jpush.cn
+# DOMAIN-SUFFIX, im64.jpush.cn
+# DOMAIN-SUFFIX, im.jpush.cn
+# DOMAIN-SUFFIX, jpush.html5.qq.com
+
+# > 中华万年历
+
+# > 中华网
+
+# > 中国日报
+
+# > 中国国际广播电视网络台（CIBN）
+# DOMAIN-SUFFIX, api.adv.ott.cibntv.net
+# DOMAIN-SUFFIX, adinf.cp11.ott.cibntv.net
+# DOMAIN-SUFFIX, adstat.cp11.ott.cibntv.net
+# DOMAIN-SUFFIX, apklog.cp11.ott.cibntv.net
+# DOMAIN-SUFFIX, cachenotice.cp11.ott.cibntv.net
+# DOMAIN-SUFFIX, ark.cp21.ott.cibntv.net
+# DOMAIN-SUFFIX, dc.cp21.ott.cibntv.net
+# DOMAIN-SUFFIX, atm.cp31.ott.cibntv.net
+# DOMAIN-SUFFIX, ipm.atm.cp31.ott.cibntv.net
+# DOMAIN-SUFFIX, val.atm.cp31.ott.cibntv.net
+# DOMAIN-SUFFIX, valf.atm.cp31.ott.cibntv.net
+# DOMAIN-SUFFIX, aty.cp45.ott.cibntv.net
+# DOMAIN-SUFFIX, agn.aty.cp45.ott.cibntv.net
+# DOMAIN-SUFFIX, m.aty.cp45.ott.cibntv.net
+# DOMAIN-SUFFIX, mmg.aty.cp45.ott.cibntv.net
+# DOMAIN-SUFFIX, de.as.cp61.ott.cibntv.net
+# DOMAIN-SUFFIX, lives.l.cp81.ott.cibntv.net
+# DOMAIN-SUFFIX, news-l.play.cp81.ott.cibntv.net
+
+# > 中国平安
+
+# > 真不卡
+
+# > 字节跳动
+HOST,applog.zijieapi.com
+HOST-SUFFIX,-normal-lq.zijieapi.com
+HOST-SUFFIX,dm.bytedance.com
+HOST-SUFFIX,tosv.byted.org
+HOST-SUFFIX,tosv.boe.byted.org
+HOST-SUFFIX,extlog.snssdk.com
+HOST-SUFFIX,sdfp.snssdk.com
+HOST-SUFFIX,ad.toutiao.com
+HOST-SUFFIX,dm.toutiao.com
+HOST-SUFFIX,dm.pstatp.com
+HOST-SUFFIX,s3a.pstatp.com
+
+# > 作业帮
+
+# > 招钱进宝
+# 广告联盟已包含
+
+
+
+# >>>>>>>>>>>>>>> ✅ # ✅ <<<<<<<<<<<<<<
+# > 广告联盟
+# 若有问题自行设置白名单
+HOST-KEYWORD,-ad-sign.byteimg.com
+HOST-KEYWORD,-tos.pstatp.com
+HOST-KEYWORD,pangolin.snssdk.com
+HOST-KEYWORD,video-cn.snssdk.com
+HOST-SUFFIX,cdntips.net
+HOST-SUFFIX,tfogc.com
+#DOMAIN-KEYWORD, volc
+HOST-SUFFIX,1a-1791.com
+HOST-SUFFIX,rumble.com
+
+
+# Ad-Stir
+
+# Adadapted
+
+# AdChina
+HOST-SUFFIX,adchina.io
+
+# AddThis
+
+# Adform
+
+# Adhouyi (广告后台)
+
+# Adinall
+
+# Adition
+
+# Adjust
+HOST-SUFFIX,adjust.io
+
+# Admarvel
+HOST-SUFFIX,admarvel.com
+
+# AdRoll
+
+# Adtaily
+
+# Adups
+
+# Adview
+
+# Adwo
+
+# Adzerk
+
+# Ad-m.asia
+
+# AdColony
+
+# AerServ
+
+# Airpush
+
+# App-Adforce
+
+# Appadhoc
+
+# AppsFlyer
+HOST-SUFFIX,appsflyer.com
+
+# Appdriver
+
+# Cacafly
+
+# Casale Media
+
+# Chartboost
+
+# Clicki
+
+# CNZZ
+
+# Criteo
+
+# comScore
+
+# Dianjoy
+
+# Dianru
+
+# dtscout
+HOST-SUFFIX,dtscout.com
+
+# Exoclick
+
+# Exosrv
+HOST-SUFFIX,exosrv.com
+HOST-SUFFIX,ads.exosrv.com
+
+# Flurry
+
+# Guomob (果盟)
+
+# GrowingIO
+
+# iClick
+
+# Innity
+
+# Inveno
+
+# InMobi
+HOST-SUFFIX,inmobi.cn
+HOST-SUFFIX,inmobicdn.cn
+HOST-SUFFIX,inmobi.com
+HOST-SUFFIX,inmobi.net
+HOST-SUFFIX,inmobicdn.net
+
+# IronSource
+HOST-SUFFIX,supersonicads.com
+
+# iPinYou (品友互动)
+
+# Jesgoo
+
+# JuicyAds
+
+# Kejet
+
+# Keyrun
+
+# Kissmetrics
+HOST-SUFFIX,kissmetrics.com
+
+# Krux
+
+# 酷云互动
+
+# Kochava
+
+# Leadbolt
+
+# Localytics
+
+# 亿动广告传媒
+
+# Marketgid
+
+# 聚胜万合
+
+# MGID
+
+# Millennial Media
+
+# Mixpanel
+
+# Moat
+
+# 创智汇聚
+
+# Mobfox
+
+# 魔窗
+
+# Mathtag
+HOST-SUFFIX,mathtag.com
+HOST-SUFFIX,pixel.mathtag.com
+HOST-SUFFIX,sync.mathtag.com
+
+# 艾德思奇（adSage）
+
+# MoPub（Twitter 公司旗下的移动广告服务平台）
+
+# NetworkBench (听云)
+
+# NicoNico
+
+# Onetad
+
+# OpenX
+HOST-SUFFIX,openx.net
+
+# Optimizely
+
+# Oracle
+
+# Pagechoice
+
+# Plista
+
+# Pubnative
+
+# PopAds
+
+# PubMatic
+
+# Qtmojo
+
+# Qumi (趣米)
+
+# Quantcast
+
+# Rayjump
+
+# Rubicon Project
+
+# Smart AdServer
+HOST-SUFFIX,smartadserver.com
+HOST-SUFFIX,cdn1.smartadserver.com
+HOST-SUFFIX,ww251.smartadserver.com
+HOST-SUFFIX,ww881.smartadserver.com
+HOST-SUFFIX,www6.smartadserver.com
+
+# Snapmobile
+
+# StatCounter
+
+# Segment
+
+# Sigmob
+
+# Sizmek
+
+# Smaato
+
+# StartApp
+
+# Taptica
+
+# TGBus
+
+# Touclick
+
+# Trafficfactory
+
+# Trafficjunky
+
+# TalkingData
+
+# Tapad
+
+# Tapjoy
+
+# 推啊 (Tuia)
+
+# VigLink
+
+# Voiceads
+
+# Vungle
+
+# Vpon
+
+# Yandex
+HOST-SUFFIX,ads.yandex.com
+
+# Yengo
+
+# 亿起发
+
+# 优效平台
+
+# 指点传媒
+
+# 诸葛智能
+
+# Zedo
+
+
+# >>>>>>>>>>>>>>> ✅ 其他 ✅ <<<<<<<<<<<<<<
