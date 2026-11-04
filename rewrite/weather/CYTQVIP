@@ -2,18 +2,29 @@
 
 项目名称：彩云天气
 下载地址：https://t.cn/A66d95hV
-脚本作者：chxm1023，wf021325 整合
+脚本作者：wf021325（原 chxm1023 线已死，2026-11-05 替换为 wf 规则组）
 电报频道：https://t.me/chxm1023
 使用声明：⚠️仅供参考，🈲转载与售卖！
 
 **************************************/
 
 [rewrite_local]
-# VIP信息
-^https?:\/\/(biz|wrapper|starplucker)\.(cyapi|caiyunapp)\.(cn|com)\/(.+\/(user\?app_name|activity\?app_name|visitors|operation\/banners|operation\/homefeatures|config)|p\/v\d\/(vip_info|user_info|entries|privileges|trial_card\/info)) url script-response-body https://raw.githubusercontent.com/chxm1023/Rewrite/main/caiyuntianqi.js
+# 原 chxm 线已死，改用 wf021325 caiyun.js 规则组（2026-11-05）
+^https:\/\/biz\.cyapi\.cn\/p\/v1\/trial_card\/info url reject-dict
+^https:\/\/biz\.cyapi\.cn\/api\/v1\/token\/device$ url reject-dict
+^https:\/\/biz\.cyapi\.cn\/p\/v1\/entries url reject-dict
+^https:\/\/starplucker\.cyapi\.cn\/v3\/config$ url reject-dict
+^https:\/\/starplucker\.cyapi\.cn\/v3\/notification\/message_center url reject-dict
+^https:\/\/starplucker\.cyapi\.cn\/v3\/config\/cypage\/home\/conditions\/local$ url reject-dict
+^https:\/\/starplucker\.cyapi\.cn\/v3\/config\/cypage\/home_activity\/conditions$ url reject-dict
+^https:\/\/starplucker\.cyapi\.cn\/v3\/config\/cypage\/40day\/conditions\/local$ url reject-dict
+^https?:\/\/biz\.cyapi\.cn\/api\/v1\/user_detail$ url script-response-body https://raw.githubusercontent.com/wf021325/qx/master/js/caiyun.js
+^https:\/\/starplucker\.cyapi\.cn\/v3\/ url script-request-body https://raw.githubusercontent.com/wf021325/qx/master/js/caiyun.js
+^https:\/\/starplucker\.cyapi\.cn\/v3\/operation\/banners\?user_type= url script-response-body https://raw.githubusercontent.com/wf021325/qx/master/js/caiyun.js
+^https:\/\/starplucker\.cyapi\.cn\/v3\/operation\/features\?user_type= url script-response-body https://raw.githubusercontent.com/wf021325/qx/master/js/caiyun.js
+^https:\/\/starplucker\.cyapi\.cn\/v3\/campaigns$ url script-response-body https://raw.githubusercontent.com/wf021325/qx/master/js/caiyun.js
+^https:\/\/starplucker\.cyapi\.cn\/v3\/operation\/feeds url script-response-body https://raw.githubusercontent.com/wf021325/qx/master/js/caiyun.js
 
-# SVIP地图-48小时预报(方法来源:苍井灰灰)
-^https?:\/\/(api|wrapper)\.(cyapi|caiyunapp)\.(cn|com)\/v\d\/(satellite|nafp\/origin_images) url script-request-header https://raw.githubusercontent.com/chxm1023/Rewrite/main/caiyuntianqi.js
 
 # 普通版广告
 ^https:\/\/ad\.cyapi\.cn\/v2\/req\?app_name=weather url reject-dict

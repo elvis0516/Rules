@@ -31,5 +31,5 @@
 
 ## 说明
 
-- 本仓库内容为 2025 年旧存档的整理迁移，不等于现行运行配置；2026-11-04 已刷新 MGTV、NetEmusic、XMLYJSVIP、keep、SpotifyVip、YoutubeBlockAD 至上游最新版，其余文件仍为 2025 年旧存档；SpotifyPremium、YoutubeBlockAD 的 Maasea JS、CYTQVIP 的 wf 线走上游 master 实时引用，无需抄。
+- 本仓库内容为 2025 年旧存档的整理迁移，不等于现行运行配置；2026-11-04 已刷新 MGTV、NetEmusic、XMLYJSVIP、keep、SpotifyVip、YoutubeBlockAD 至上游最新版，其余文件仍为 2025 年旧存档；SpotifyPremium、YoutubeBlockAD 的 Maasea JS、CYTQVIP 的 wf 线走上游 master 实时引用，无需抄。2026-11-05 彩云天气死链替换：CYTQSVIP 的 WeiRen0 cytq.js 地址改用 wf021325 caiyun.js，CYTQVIP 的 chxm 两行改用 wf 规则组（去重后 14 行）。
 - 迁移时已处理两处明文凭据（Uee 的 ca-passphrase 行删除、SpotifyLRC 的密钥替换为占位），其余文件原文照搬。
