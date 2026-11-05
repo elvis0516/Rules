@@ -1,6 +1,7 @@
 # QX 现行配置（脱敏版，同步于 2026-11-05）
 # 来源：2026-11-04 19:40 现行版 + 2026-11-05 两处改动（彩云改走 Rules CYTQVIP、filter_local 加 gather 拦截）
 # 脱敏：[mitm] passphrase / p12 已替换为占位；节点定义在本地 server_remote snippet 文件里，不在本文本内、未同步。
+# 更正（2026-11-05）：彩云 CYTQVIP 行 opt-parser 改回 true——该文件带 /* */ 注释头，仍需资源解析器提取（用户实测）。
 ;预配置作者
 ;毒奶博主
 ;limbopro.com
@@ -69,7 +70,7 @@ https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Quant
 https://yfamilys.com/rewrite/CamScanner.conf, tag=扫描全能王, update-interval=172800, opt-parser=true, enabled=false
 https://limbopro.com/Adblock4limbo.conf, tag=毒奶特供(去网页广告计划), update-interval=172800, opt-parser=false, enabled=false
 https://raw.githubusercontent.com/wesselyang/rules/master/plugin/spotify.plugin, tag=Spotify, update-interval=172800, opt-parser=true, enabled=true
-https://raw.githubusercontent.com/elvis0516/Rules/main/rewrite/weather/CYTQVIP, tag=彩云SVIP, update-interval=172800, opt-parser=false, enabled=true
+https://raw.githubusercontent.com/elvis0516/Rules/main/rewrite/weather/CYTQVIP, tag=彩云SVIP, update-interval=172800, opt-parser=true, enabled=true
 https://raw.githubusercontent.com/89996462/Quantumult-X/main/ycdz/JX.js, tag=简讯VIP, update-interval=172800, opt-parser=true, enabled=true
 https://raw.githubusercontent.com/Peng-YM/Sub-Store/master/config/QX.snippet, tag=Sub-store(高级订阅管理器), update-interval=172800, opt-parser=false, enabled=false
 
