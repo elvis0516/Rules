@@ -150,6 +150,7 @@ IP-CIDR,192.168.1.1/24,DIRECT
 
 # > 去广告（对应 QX Advertising.list → 🛑广告拦截）
 RULE-SET,https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Surge/Advertising/Advertising_All.list,REJECT
+RULE-SET,https://raw.githubusercontent.com/elvis0516/Rules/main/filter/rejectAd-dedup-surge.list,REJECT
 # > 运营商劫持（对应 QX Hijacking.list → 🛑广告拦截）
 RULE-SET,https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Surge/Hijacking/Hijacking.list,REJECT
 # > 微信直连（对应 QX WeChat.list → direct）

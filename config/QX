@@ -52,6 +52,7 @@ static=🕹 终极清单, direct, proxy, 🌏 国外网站, img-url=https://raw.
 https://github.com/fmz200/wool_scripts/raw/main/QuantumultX/filter/filterFix.list, tag=分流修正, enabled=true
 https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/QuantumultX/Advertising/Advertising.list, tag=🚦去广告, force-policy=🛑 广告拦截, update-interval=172800, opt-parser=true, enabled=true
 https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/QuantumultX/Hijacking/Hijacking.list, tag=🚫 运营商劫持, force-policy=🛑 广告拦截, update-interval=172800, opt-parser=true, enabled=true
+https://raw.githubusercontent.com/elvis0516/Rules/main/filter/rejectAd-dedup.list, tag=奶思去广告去重, force-policy=🛑 广告拦截, update-interval=172800, enabled=true
 https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/QuantumultX/WeChat/WeChat.list, tag=微信直连, force-policy=direct, update-interval=172800, opt-parser=true, enabled=true
 https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/QuantumultX/OpenAI/OpenAI.list, tag=OpenAI, force-policy=🇯🇵 日本, update-interval=172800, opt-parser=false, enabled=false
 https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/QuantumultX/Google/Google.list, tag=Google, force-policy=🌏 国外网站, update-interval=172800, opt-parser=true, enabled=false
