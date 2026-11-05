@@ -1,211 +1,103 @@
-[general]
-# 代理策略测试
-server_check_url = http://cp.cloudflare.com/generate_204
-# 服务检查超时
-server_check_timeout = 5000
-# 配置文件图标
-profile_img_url = https://github.com/Centralmatrix3/Matrix-io/raw/master/Gallery/Special/Special003.png
-# DNS排除列表
-dns_exclusion_list = *.cmpassport.com, *.jegotrip.com.cn, *.icitymobile.mobi, id6.me, *.pingan.com.cn, *.cmbchina.com
-# 地理位置检查
-geo_location_checker = http://ip-api.com/json/?lang=zh-CN, https://github.com/Centralmatrix3/Scripts/raw/master/Scripts/IP-API.js
-# 资源解析器
-resource_parser_url = https://raw.githubusercontent.com/KOP-XIAO/QuantumultX/master/Scripts/resource-parser.js
+# QX 现行配置（脱敏版，同步于 2026-11-05）
+# 来源：2026-11-04 19:40 现行版 + 2026-11-05 两处改动（彩云改走 Rules CYTQVIP、filter_local 加 gather 拦截）
+# 脱敏：[mitm] passphrase / p12 已替换为占位；节点定义在本地 server_remote snippet 文件里，不在本文本内、未同步。
+;预配置作者
+;毒奶博主
+;limbopro.com
+;09.11.2024 更新   
+;https://t.me/limboprossr 关注更新
+;https://t.me/Adblock4limbo 群组反馈与讨论交流
 
+[general]
+
+#解析器作者 @XIAO_KOP 
+resource_parser_url=https://raw.githubusercontent.com/KOP-XIAO/QuantumultX/master/Scripts/resource-parser.js
+
+#IP_API 改自 @XIAO_KOP
+geo_location_checker=http://ip-api.com/json/?lang=zh-CN, https://raw.githubusercontent.com/limbopro/QuantumultX/master/Scripts/IP_API.js
 
 
 [dns]
-; 禁用系统 DNS（no-system） 以及 ipv6
-;no-system
 ;no-ipv6
-; 山东联通主DNS
-server = 202.102.128.68 
-; 山东联通备DNS
-server = 202.102.152.3 
-server=114.114.114.114
- ; 腾讯DNS（EDNS优化）
-server = 119.29.29.29
-server=117.50.10.10
- ;阿里DNS
+no-system
 server=223.5.5.5
-; 阿里 IPv6 DNS
-server = [2400:3200:baba::1] 
-server = [2001:4860:4860::8888] 
+server=114.114.114.114
+server=119.29.29.29
+server=[2400:3200:baba::1]
+server=[2400:3200::1]
 
 [policy]
-; 动态延迟测试策略组
-url-latency-benchmark=香港优选, server-tag-regex=香港|港|🇭🇰|HK|(?i)Hong, check-interval=1800, tolerance=50, alive-checking=true, img-url=https://raw.githubusercontent.com/Centralmatrix3/Scripts/master/Gallery/Color/HK.png
-url-latency-benchmark=台湾优选, server-tag-regex=🇹🇼|TW|Taiwan|台湾|台北|台中|新北|彰化|CHT|台|HINET(?i)Taiwan, check-interval=1800, tolerance=50, alive-checking=true, img-url=https://raw.githubusercontent.com/Centralmatrix3/Scripts/master/Gallery/Color/TW.png
-url-latency-benchmark=美国优选, server-tag-regex=🇺🇸|美国|波特兰|达拉斯|俄勒冈|凤凰城|费利蒙|硅谷|拉斯维加斯|洛杉矶|圣何塞|圣克拉拉|西雅图|芝加哥, check-interval=1800, tolerance=50, alive-checking=true, img-url=https://raw.githubusercontent.com/Centralmatrix3/Scripts/master/Gallery/Color/US.png
-url-latency-benchmark =自动优选, server-tag-regex=.*, check-interval=1800, tolerance=50, alive-checking=true, img-url=https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/refs/heads/master/icon/color/available.png
-
-
-; 静态策略组（兜底代理）
-static=🕹 终极清单, direct, proxy, 自动优选,  img-url=https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/refs/heads/master/icon/qure/color/Final.png
-
-; 应用分流策略组
-static=📺 BiliBili, direct, 香港优选, 台湾优选, img-url= https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/refs/heads/master/icon/qure/color/bilibili.png
-static=🍎 苹果服务, direct, proxy, img-url= https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/refs/heads/master/icon/qure/color/Apple_2.png
-static=🎞️ YouTube, direct, proxy,  自动优选, img-url= https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/refs/heads/master/icon/qure/color/YouTube.png
-static=🎧️ Spotify, 🕹 终极清单, 美国优选, img-url= https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/refs/heads/master/icon/qure/color/Spotify.png
-static=🌏 国外服务, proxy, 香港优选, 台湾优选, 美国优选, 自动优选, img-url= https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/refs/heads/master/icon/qure/color/Global.png
-static=💼 Microsoft, direct, proxy, 香港优选, 台湾优选, 美国优选, 自动优选,  img-url= https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/refs/heads/master/icon/qure/color/Microsoft.png
+static=🌏 国外网站, 🇯🇵 日本, 🇰🇷 韩国, 🇸🇬 新加坡, proxy, direct, img-url=https://raw.githubusercontent.com/Orz-3/mini/master/Color/Global.png
+static=🇰🇷 韩国, server-tag-regex=韩国|南韩|South Korea|Korea|🇰🇷|春川|KR-春川, img-url=https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/KR.png
+static=🇯🇵 日本, server-tag-regex=日本|Japan|🇯🇵|东京|東京|大阪|名古屋|福冈|福岡|JP-东京, img-url=https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/JP.png
+static=🇸🇬 新加坡, server-tag-regex=新加坡|Singapore|狮城|獅城|甲骨文新加坡, img-url=https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/SG.png
+url-latency-benchmark=♻️ 故障切换, 老兄 东京vm, 老兄 东京anytls, 老兄 东京vl, 大阪 JP2-233boy-reality, 免流春川amd, 春川amd, check-interval=600, tolerance=0, alive-checking=false, img-url=https://raw.githubusercontent.com/Orz-3/mini/master/Color/Available.png
+static=🎵 Spotify, 🇯🇵 日本, 🇰🇷 韩国, 🇸🇬 新加坡, proxy, direct, img-url=https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/Spotify.png
+static=🍎 苹果服务, direct, 🇯🇵 日本, proxy, img-url=https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/Apple.png
+static=🪟 微软服务, direct, 🇯🇵 日本, 🇰🇷 韩国, 🇸🇬 新加坡, proxy, img-url=https://raw.githubusercontent.com/Orz-3/mini/master/Color/Microsoft.png
+static=📌 Pinterest, 🇯🇵 日本, 🇰🇷 韩国, 🇸🇬 新加坡, direct, proxy, img-url=https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/Drill.png
+static=👽 Reddit, 🇯🇵 日本, 🇰🇷 韩国, 🇸🇬 新加坡, direct, proxy, img-url=https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/Lab.png
+static=🔍 Bing, direct, 🇯🇵 日本, 🇰🇷 韩国, 🇸🇬 新加坡, proxy, img-url=https://raw.githubusercontent.com/Orz-3/mini/master/Color/Bing.png
+static=✈️ Telegram, 🇯🇵 日本, 🇰🇷 韩国, 🇸🇬 新加坡, direct, proxy, img-url=https://raw.githubusercontent.com/Orz-3/mini/master/Color/Telegram.png
+static=🛑 广告拦截, reject, proxy, direct, img-url=https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/Advertising.png
+static=🕹 终极清单, direct, proxy, 🌏 国外网站, img-url=https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/Final.png
 
 [server_remote]
-
+老兄东京.snippet, tag=老兄东京, update-interval=172800, opt-parser=true, enabled=true
+甲骨文.snippet, tag=甲骨文, update-interval=172800, opt-parser=true, enabled=true
 
 
 [filter_remote]
-; 1.修正规则（非必须但建议的，不能屏蔽的/系统服务类型，一般为直连，DIRECT）
-
-
-
-; 2. 去广告规则（非必须，一般为拒绝，REJECT）
-https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/QuantumultX/Advertising/Advertising.list, tag=全局广告拦截, force-policy=reject, update-interval=86400, enabled=true
-https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/QuantumultX/Hijacking/Hijacking.list, tag=🚫 运营商劫持, force-policy=reject, update-interval=172800, opt-parser=true, enabled=true
-
-
-; 3. 特殊/需要单独分流的规则（比如OpenAl，被包含在大分流规则里面的，往上放）
-
-
-
-; 4. 国外强制代理（必须，被墙了的，不代理无法访问，一般为 PROXY，或者自己选择的节点 / 策略）
-https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/QuantumultX/YouTube/YouTube.list, tag=🎞️ YouTube, force-policy=proxy, update-interval=86400, enabled=true
-https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/QuantumultX/Pinterest/Pinterest.list, tag=🌌 Pinterest, force-policy=proxy, update-interval=86400, enabled=true
-https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/QuantumultX/Telegram/Telegram.list, tag=🛸 Telegram, force-policy=proxy, update-interval=86400, enabled=true
-https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/QuantumultX/Spotify/Spotify.list, tag=🎧️ Spotify, force-policy=🎧️ Spotify, enabled=true
-
-
-
-; 5. 国外建议代理的（非必须，可直接访问也可以代理的，一般为 PROXY，或者自己选择的节点 / 策略）
-https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/QuantumultX/Apple/Apple.list, tag=🍎 苹果服务, force-policy=🍎 苹果服务, enabled=true
-https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/QuantumultX/Microsoft/Microsoft.list, tag=💼 Microsoft, force-policy=💼 Microsoft, enabled=true
-https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/QuantumultX/OneDrive/OneDrive.list, tag=☁️ OneDrive, force-policy=💼 Microsoft, enabled=true
-https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/QuantumultX/Global/Global.list, tag=🌍 国外网站, force-policy= 🌏 国外服务, enabled=true
-
-; 6. 局域网规则 （非必须，DIRECT策略，绕过代理,直连本地网络，解决特殊内网环境可能造成的影响）
-
-
-; 7. 国内规则（建议有，一般为直连，常采用 GEOIP 规则，也可以用ASN等，策略是 DIRECT）
-https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/QuantumultX/China/China.list, tag=🐼 国内网站, force-policy=direct, update-interval=172800, opt-parser=false, enabled=true
-
-https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/QuantumultX/ChinaIPs/ChinaIPs.list, tag=🇨🇳️ 国内IP池, force-policy=direct, update-interval=172800, opt-parser=false, enabled=true
-
-; 8. FINAL（兜底）（自带的，建议为 PROXY，或者自己选择的节点 / 策略或者直连均可）
-
-
-
-
-
-
-
-
-
-
-[filter_local]
-; host > host-suffix > host-keyword(wildcard) > geoip = ip-cidr > user-agennt
-
-; 屏蔽ios更新
-host,mesu.apple.com,reject
-host,gdmf.apple.com,reject
-host,updates-http.cdn-apple.com,reject
-
-
-;DNS Leak
-host-suffix,astrill.com,PROXY
-host-suffix,dnsleaktest.com,PROXY
-host-suffix,dnsleak.com,PROXY
-host-suffix,expressvpn.com,PROXY
-host-suffix,nordvpn.com,PROXY
-host-suffix,surfshark.com,PROXY
-host-suffix,ipleak.net,PROXY
-host-suffix,perfect-privacy.com,PROXY
-host-suffix,browserleaks.com,PROXY
-host-suffix,browserleaks.org,PROXY
-host-suffix,vpnunlimited.com,PROXY
-host-suffix,whoer.net,PROXY
-host-suffix,whrq.net,PROXY
-
-;已采用 ip 池数据，因此注释掉 geoip cn
-;geoip, cn, direct
-
-; ip 规则
-ip-cidr, 10.0.0.0/8, direct
-ip-cidr, 127.0.0.0/8, direct
-ip-cidr, 172.16.0.0/12, direct
-ip-cidr, 192.168.0.0/16, direct
-ip-cidr, 224.0.0.0/24, direct
-
-;ipv6 规则
-ip6-cidr, 2001:4860:4860::8888/32, direct
-
-final, 🕹 终极清单
-
-
+https://github.com/fmz200/wool_scripts/raw/main/QuantumultX/filter/filterFix.list, tag=分流修正, enabled=true
+https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/QuantumultX/Advertising/Advertising.list, tag=🚦去广告, force-policy=🛑 广告拦截, update-interval=172800, opt-parser=true, enabled=true
+https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/QuantumultX/Hijacking/Hijacking.list, tag=🚫 运营商劫持, force-policy=🛑 广告拦截, update-interval=172800, opt-parser=true, enabled=true
+https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/QuantumultX/WeChat/WeChat.list, tag=微信直连, force-policy=direct, update-interval=172800, opt-parser=true, enabled=true
+https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/QuantumultX/OpenAI/OpenAI.list, tag=OpenAI, force-policy=🇯🇵 日本, update-interval=172800, opt-parser=false, enabled=false
+https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/QuantumultX/Google/Google.list, tag=Google, force-policy=🌏 国外网站, update-interval=172800, opt-parser=true, enabled=false
+https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/QuantumultX/Telegram/Telegram.list, tag=Telegram, force-policy=✈️ Telegram, update-interval=172800, opt-parser=true, enabled=true
+https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/QuantumultX/Spotify/Spotify.list, tag=Spotify, force-policy=🎵 Spotify, update-interval=172800, opt-parser=true, enabled=true
+https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/QuantumultX/Bing/Bing.list, tag=Bing, force-policy=🔍 Bing, update-interval=172800, opt-parser=true, enabled=true
+https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/QuantumultX/Microsoft/Microsoft.list, tag=Microsoft, force-policy=🪟 微软服务, update-interval=172800, opt-parser=true, enabled=true
+https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/QuantumultX/Apple/Apple.list, tag=🍎 苹果服务, force-policy=🍎 苹果服务, update-interval=172800, opt-parser=false, enabled=true
+https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/QuantumultX/Pinterest/Pinterest.list, tag=Pinterest, force-policy=📌 Pinterest, update-interval=172800, opt-parser=true, enabled=true
+https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/QuantumultX/Reddit/Reddit.list, tag=Reddit, force-policy=👽 Reddit, update-interval=172800, opt-parser=true, enabled=true
+https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/QuantumultX/Global/Global.list, tag=国外通用, force-policy=🌏 国外网站, update-interval=172800, opt-parser=true, enabled=false
+https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/QuantumultX/China/China.list, tag=国内域名, force-policy=direct, update-interval=172800, opt-parser=true, enabled=true
+https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/QuantumultX/ChinaIPs/ChinaIPs.list, tag=国内IP段, force-policy=direct, update-interval=172800, opt-parser=true, enabled=false
 
 [rewrite_remote]
-; 1. 核心解锁规则（优先加载）
-
-https://whatshub.top/rewrite/CamScanner.conf, tag=扫描全能王, update-interval=172800, opt-parser=false, enabled=true
-https://raw.githubusercontent.com/WeiGiegie/666/main/ximalayajisuban.js, tag=喜马极速, update-interval=172800, opt-parser=true, enabled=true
-
-https://github.com/ddgksf2013/Rewrite/raw/master/UnlockVip/Spotify.conf, tag=Spotify, update-interval=172800, opt-parser=true, enabled=true
-https://raw.githubusercontent.com/app2smile/rules/master/module/spotify.conf, tag=Spotify音乐VIP@app2smile, update-interval=172800, opt-parser=false, enabled=false
-https://raw.githubusercontent.com/Crazy-Z7/Scrip/main/aptv.js, tag=Aptv, update-interval=172800, opt-parser=true, enabled=true
-https://whatshub.top/rewrite/aptv.conf, tag=APTV, update-interval=172800, opt-parser=false, enabled=false
-https://raw.githubusercontent.com/89996462/Quantumult-X/main/ycdz/JX.js, tag=简讯, update-interval=172800, opt-parser=true, enabled=true
-https://raw.githubusercontent.com/Yu9191/Rewrite/refs/heads/main/kdf.js, tag=看东方, update-interval=172800, opt-parser=true, enabled=false
-https://raw.githubusercontent.com/WeiGiegie/666/main/mgtv.js, tag=芒果TV, update-interval=172800, opt-parser=true, enabled=false
-https://raw.githubusercontent.com/NobyDa/Script/master/Surge/Module/TestFlightDownload.sgmodule, tag=解除 TF 限制, update-interval=172800, opt-parser=true, enabled=true
-https://raw.githubusercontent.com/Yu9191/Rewrite/main/xfbs.js, tag=小凡博士, update-interval=172800, opt-parser=true, enabled=false
-https://raw.githubusercontent.com/WeiGiegie/666/main/keep.js, tag=keep, update-interval=172800, opt-parser=true, enabled=false
-https://whatshub.top/rewrite/keep.conf, tag=Keep, update-interval=172800, opt-parser=false, enabled=false
-https://raw.githubusercontent.com/89996462/Quantumult-X/main/ycdz/fengkuangapp.js, tag=疯狂背单词, update-interval=172800, opt-parser=true, enabled=false
-https://raw.githubusercontent.com/WeiGiegie/666/main/ximalaya.js, tag=喜马, update-interval=172800, opt-parser=true, enabled=false
-https://raw.githubusercontent.com/Sliverkiss/GoodNight/master/Script/xkw.js, tag=学科网, update-interval=172800, opt-parser=true, enabled=false
-https://raw.githubusercontent.com/Yuheng0101/X/main/Scripts/tidal.js, tag=TIDAL, update-interval=172800, opt-parser=true, enabled=false
-https://raw.githubusercontent.com/chxm1023/Rewrite/main/fimo.js, tag=Fimo, update-interval=172800, opt-parser=true, enabled=false
-https://raw.githubusercontent.com/WeiGiegie/666/main/xmly.js, tag=伟人喜马拉雅, update-interval=172800, opt-parser=true, enabled=false
-https://raw.githubusercontent.com/WeiGiegie/666/main/wangyiyun.js, tag=网抑云黑胶, update-interval=172800, opt-parser=true, enabled=false
-
-
-
-; 2. 应用专用去广告（次优先）
-
-https://raw.githubusercontent.com/ddgksf2013/Rewrite/master/AdBlock/YoutubeAds.conf, tag=Youtube去广告, update-interval=172800, opt-parser=true, enabled=true
-
-
-
-; 3. 通用广告拦截（后置）
-https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rewrite/QuantumultX/AdvertisingLite/AdvertisingLite.conf, tag=去广告, update-interval=86400, opt-parser=false, enabled=true
-https://raw.githubusercontent.com/deezertidal/QuantumultX-Rewrite/master/rewrite/adultraplus.conf, tag=增强去广告, update-interval=86400, enabled=true
-https://raw.githubusercontent.com/fmz200/wool_scripts/main/QuantumultX/rewrite/chongxie.txt, tag=广告拦截合集@fmz200, update-interval=604800, opt-parser=false, enabled=true
-
-
+https://yfamilys.com/rewrite/CamScanner.conf, tag=扫描全能王, update-interval=172800, opt-parser=true, enabled=false
+https://limbopro.com/Adblock4limbo.conf, tag=毒奶特供(去网页广告计划), update-interval=172800, opt-parser=false, enabled=false
+https://raw.githubusercontent.com/wesselyang/rules/master/plugin/spotify.plugin, tag=Spotify, update-interval=172800, opt-parser=true, enabled=true
+https://raw.githubusercontent.com/elvis0516/Rules/main/rewrite/weather/CYTQVIP, tag=彩云SVIP, update-interval=172800, opt-parser=false, enabled=true
+https://raw.githubusercontent.com/89996462/Quantumult-X/main/ycdz/JX.js, tag=简讯VIP, update-interval=172800, opt-parser=true, enabled=true
+https://raw.githubusercontent.com/Peng-YM/Sub-Store/master/config/QX.snippet, tag=Sub-store(高级订阅管理器), update-interval=172800, opt-parser=false, enabled=false
 
 [server_local]
 
 
 
+[filter_local]
+
+ip-cidr, 10.0.0.0/8, direct
+ip-cidr, 127.0.0.0/8, direct
+ip-cidr, 172.16.0.0/12, direct
+ip-cidr, 192.168.0.0/16, direct
+ip-cidr, 224.0.0.0/24, direct
+geoip, cn, direct
+host, gather.colorfulclouds.net, reject
+final, 🕹 终极清单
+
+
 [rewrite_local]
-
-
-
+^https:\/\/(api|api-cs)\.intsig\.net\/purchase\/cs\/query_property\? url script-response-body https://raw.githubusercontent.com/NobyDa/Script/master/Surge/JS/CamScanner.js
+^https?:\/\/app\.bilibili\.com\/x\/resource\/fingerprint\? url script-request-header https://raw.githubusercontent.com/ClydeTime/BiliBili/main/js/BiliBiliDailyBonus.js
 [task_local]
-14 14 * * * https://raw.githubusercontent.com/deezertidal/private/main/tv.js, tag=电视热门榜, img-url=appletv.system, enabled=true
-10 10 * * * https://raw.githubusercontent.com/deezertidal/private/main/rates.js, tag=汇率, img-url=yensign.circle.system, enabled=true
-0 0 10 1/3 * ? https://raw.githubusercontent.com/deezertidal/private/main/book.js, tag=新书速递, img-url=book.fill.system, enabled=true
-12 12 * * * https://raw.githubusercontent.com/deezertidal/private/main/oil.js, tag=今日油价, img-url=car.fill.system, enabled=false
-8 8 * * * https://raw.githubusercontent.com/deezertidal/private/main/lifeindex.js, tag=生活指数, img-url=umbrella.fill.system, enabled=true
-0 9,15 * * * https://raw.githubusercontent.com/Yuheng0101/X/main/Tasks/60s.js, tag=每天60s读懂世界, enabled=true
-0 9,15 * * * https://raw.githubusercontent.com/Yuheng0101/X/main/Tasks/hlbdy.js, tag=黑料, img-url=img-url=https://is5-ssl.mzstatic.com/image/thumb/Purple113/v4/35/8f/15/358f1560-6e98-9d39-ed19-6c50a7089563/AppIcon-0-0-1x_U007emarketing-0-0-0-4-0-0-sRGB-0-0-0-GLES2_U002c0-512MB-85-220-0-0.jpeg, enabled=false
-12 12 * * * https://raw.githubusercontent.com/elvis0516/wool_scripts/main/QuantumultX/scripts/oil.js, tag=今日油价, enabled=true
-
-event-interaction https://raw.githubusercontent.com/KOP-XIAO/QuantumultX/master/Scripts/streaming-ui-check.js, tag=流媒体-解锁查询, img-url=checkmark.seal.system, enabled=true
-event-interaction https://raw.githubusercontent.com/I-am-R-E/Functional-Store-Hub/Master/NodeLinkCheck/Script/NodeLinkCheck.js, tag=Env代理链路检测, img-url=https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/Stack.png, enabled=true
-event-interaction https://raw.githubusercontent.com/fmz200/wool_scripts/main/QuantumultX/scripts/server_info.js, tag=节点详情查询, img-url=https://raw.githubusercontent.com/fmz200/wool_scripts/main/icons/apps/ipInfo.png, enabled=true
-
-
+30 7 * * * https://raw.githubusercontent.com/ClydeTime/BiliBili/main/js/BiliBiliDailyBonus.js, tag=B站每日等级任务, img-url=https://raw.githubusercontent.com/HuiDoY/Icon/main/mini/Color/bilibili.png, enabled=true
 [http_backend]
 
 [mitm]
+passphrase = REDACTED
+p12 = REDACTED
+
+hostname = ap*.intsig.net,app.bilibili.com

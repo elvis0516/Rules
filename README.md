@@ -4,9 +4,10 @@
 
 ## 目录
 
-- `config/`：旧配置原文存档（2025 年快照，不是现行运行配置）
-  - `QX`：2025-04 老版 QuantumultX 配置
-  - `Uee`：2025-11 Loon V2.1 配置（Mitm 的 ca-passphrase 行已删除）
+- `config/`：现行配置脱敏版（2026-11-05 同步，只保留最后一版）
+  - `QX`：2026-11-04 19:40 现行版 + 11-05 两处改动（彩云改走 Rules CYTQVIP、filter_local 加 gather 拦截）；[mitm] passphrase / p12 已脱敏；节点定义在本地 server_remote snippet 文件里，未同步
+  - `Uee`：Loon 现行版（2026-10-26 建，含 10-27 微信/有道修正）；节点 IP/端口/密码/UUID/指纹/SNI 已脱敏；Mitm 证书留空
+  - `Surge`：2026-11-04 现行版（13 组）；[Proxy] 节点 IP/端口/密码/UUID/指纹/SNI 已脱敏；[MITM] ca-passphrase / ca-p12 已脱敏
 - `rewrite/`：重写规则，按 App 类型分类
   - `adblock/`：ADchongxie（fmz200 奶思去广告重写合集，2025-03-21 版）
   - `video/`：MGTV（芒果 TV）、YoutubeBlockAD
@@ -31,5 +32,5 @@
 
 ## 说明
 
-- 本仓库内容为 2025 年旧存档的整理迁移，不等于现行运行配置；2026-11-04 已刷新 MGTV、NetEmusic、XMLYJSVIP、keep、SpotifyVip、YoutubeBlockAD 至上游最新版，其余文件仍为 2025 年旧存档；SpotifyPremium、YoutubeBlockAD 的 Maasea JS、CYTQVIP 的 wf 线走上游 master 实时引用，无需抄。2026-11-05 彩云天气死链替换：CYTQSVIP 的 WeiRen0 cytq.js 地址改用 wf021325 caiyun.js，CYTQVIP 的 chxm 两行改用 wf 规则组（去重后 14 行）。
-- 迁移时已处理两处明文凭据（Uee 的 ca-passphrase 行删除、SpotifyLRC 的密钥替换为占位），其余文件原文照搬。
+- `config/` 现为现行配置脱敏版（2026-11-05 同步）；`rewrite/` 与 `filter/` 仍为 2025 年旧存档的整理迁移；2026-11-04 已刷新 MGTV、NetEmusic、XMLYJSVIP、keep、SpotifyVip、YoutubeBlockAD 至上游最新版，其余文件仍为 2025 年旧存档；SpotifyPremium、YoutubeBlockAD 的 Maasea JS、CYTQVIP 的 wf 线走上游 master 实时引用，无需抄。2026-11-05 彩云天气死链替换：CYTQSVIP 的 WeiRen0 cytq.js 地址改用 wf021325 caiyun.js，CYTQVIP 的 chxm 两行改用 wf 规则组（去重后 14 行）。2026-11-05 config/QX、config/Uee、config/Surge 已更新为现行配置脱敏版（替换 2025 年旧存档；旧版原文仍在旧仓库 QuantumultX、Loon 及本地克隆里）。
+- 迁移时已处理两处明文凭据（Uee 的 ca-passphrase 行删除、SpotifyLRC 的密钥替换为占位），其余文件原文照搬。2026-11-05 同步现行配置时另做脱敏：QX 的 [mitm] passphrase/p12、Loon 的节点信息、Surge 的 [Proxy] 节点信息与 [MITM] 证书均已替换为占位。

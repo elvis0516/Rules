@@ -1,224 +1,265 @@
-# ====================================================================================
-# Loon 定制高可用配置 V2.1 修正优化版 - 作者：Uee&AI
-# 核心目标：最高 App 兼容性 (关闭 MitM)，优化自建/订阅混合节点分流
-# 修正内容：修复策略组成员引用；调整规则优先级；优化App策略组。
-# ====================================================================================
+# Loon 现行配置（脱敏版）：ueechao，同步于 2026-11-05
+# 基线：只用最后一版。QX 最新版（10-16 当前配置 + 10-17 精简 7 表）与 Surge 最新版
+# （10-21 Bing、微软服务独立组）。旧版不用作依据。
+# 状态：现行运行版（2026-10-26 建，含 10-27 微信/有道修正）；节点信息已脱敏，MITM 证书留空。
+#
+# ===== 转换与未核实清单（必读，转换不是官方定论）=====
+# 1. [Proxy] 全部 7 条均由 Surge 10-16 完整配置 [Proxy] 段转换而来，Loon 官方未读到
+#    节点参数表，转换写法均为样本级 / 转换器级，不是官方定论。
+#    - VMess：位置参数 auto / UUID / alterId=0 来自 Loon 样本示例；Surge 的 vmess-aead
+#      标志未单独带入，App 内若显示 AEAD 关闭，用 App 节点编辑器补回。
+#    - VMess WS：transport=ws、path、host 由 Surge ws-path、ws-headers 映射，over-tls
+#      未写（Surge 该行本身未开 TLS），App 内核对传输与 TLS 开关。
+#    - TUIC：类型名由 Surge tuic-v5 写成 tuic，uuid / password 顺序、tls-name 由 sni
+#      映射、skip-cert-verify 照搬，均未核实；alpn 未写。
+#    - AnyTLS：password / tls-name / skip-cert-verify 照搬，Loon 对 AnyTLS 的支持
+#      本轮只到样本级，未读到官方参数表。
+#    - Hysteria2：password、salamander-password、tls-name、skip-cert-verify 照搬；
+#      server-cert-fingerprint-sha256 参数名未核实，App 若不支持会被忽略或报错，
+#      报错时先删该参数再导入。
+#    - 若某条节点行导入失败，不要凭猜改参数：删该行，在 App 内用分享链接 / 节点
+#      编辑器重新导入，让 App 自己生成该行，再回填本文件。
+# 2. [General] 翻译说明：
+#    - dns-server、proxy-test-url、internet-test-url、test-timeout、allow-wifi-access
+#      来自 Surge 最新 General；ip-mode、ipv6-vif、udp-fallback-mode、disable-stun、
+#      domain-reject-mode、dns-reject-mode 来自 Loon 官方页与 fmz200 样本对照。
+#    - skip-proxy 在 Loon 里只绕过 HTTP 代理，不控制 TUN 路由，与 Surge 语义不同；
+#      Surge 的 skip-proxy 清单照搬后若 App 报错，先缩回 fmz200 的短清单。
+#    - bypass-tun、real-ip 分别来自 fmz200 样本与 Surge always-real-ip 清单的翻译，
+#      等价性未在官方页逐字核实。
+#    - hijack-dns 写法为样本级，App 内核对。
+#    - GeoIP 自动更新：Surge 的 disable-geoip-db-auto-update 在 Loon 侧没有已核实
+#      的对应键，本文件不编造该键；库地址写 Hackl0us GeoIP2-CN，App 是否自动更新
+#      以 App 行为为准。
+#    - sni-sniffing、disconnect-on-policy-change 本文件不写（官方常用页未收录）。
+# 3. 远程规则本地与远程合并顺序、FINAL 默认槽位模型为样本级推断，未在官方页核实。
+#    真机验证法：规则命中日志里查一个同时在 filterFix 与 Advertising 里的域名，
+#    命中 DIRECT 才算 filterFix 内联置顶生效；查一个 Bing 域名，命中 🔍 Bing 组
+#    才算 Bing 在 Microsoft 之前生效；查一个表外域名，命中 FINAL 才算兜底生效。
+# 4. 远程表文件名：WeChat、Spotify 已由 fmz200 原文验证；Advertising、Hijacking、
+#    Bing、Apple、China、Microsoft 均按 blackmatrix7 rule/Loon/<服务>/<服务>.list
+#    模式推断，未逐个打开核对。若某条下载 404，先去仓库核对实际文件名再改行，
+#    不要改用 Surge 目录的表。
+# 5. 插件：只写已验证直链，其余一律注释占位，不编造 URL，不照抄插件全文。
+# 6. MitM：主配置 hostname 只写插件本体已验证的 Spotify 域名；彩云、扫描全能王
+#    的域名本轮未验证，不编造，待插件按名添加后从插件 [Script]
+# [Mitm] 段回填。
+
+#    ca-p12、ca-passphrase 留空，由用户在 App 内生成并在 iOS 信任设置里开启。
+#
+# ===== 已确认决定（摘要）=====
+# 节点：两清单合并去重，7 条、4 个地点，全部写进 [Proxy]。
+# 地区组：只手动，不设 Auto 组。终极清单：日本、韩国、新加坡、DIRECT 垫底。
+# 服务组：全留 9 组。插件：工具类 + 去广告 + 三项重写，全加。
+# filterFix：内联置顶，沿用 Surge 最新版已验证的内联行，逐条保留原策略。
+# 远程规则顺序见 [Remote Rule] 段；Spotify 规则 enabled=false，组保留。
 
 [General]
-# IP查询模式
-ip-mode = v4-only
-# TUN IPv6配置
+ip-mode = ipv4-only
 ipv6-vif = off
-# DNS serve
-dns-server = system
-# SNI 嗅探/劫持 性能优化和域名解析
-sni-sniffing = true
-# 禁用 STUN 协议防止 IP 泄露和兼容性问题
-disable-stun = true
-# DNS 拒绝模式 优化拒绝流量的 DNS 响应 返回本地回环地址避免程序报错
-dns-reject-mode = LoopbackIP
-# 域名拒绝模式 控制被拒绝域名的处理方式 使用 DNS 级别的拒绝
-domain-reject-mode = DNS
-# UDP 流量的兜底模式 处理未被分流规则明确捕获的 UDP 流量 默认拒绝
-udp-fallback-mode = REJECT
-# Wi-Fi共享开启时http服务的端口
-wifi-access-http-port = 7222
-# Wi-Fi共享开启时socks5服务的端口
-wifi-access-socks5-port = 7221
-# 是否允许Wi-Fi下共享网络
-allow-wifi-access = false
-# 节点测速时的超时秒数
-test-timeout = 5
-interface-mode = auto
-# 策略切换时关闭连接
-disconnect-on-policy-change = false
-# 直连测试URL
+dns-server = system,223.5.5.5,119.29.29.29
+# hijack-dns 原 8.8.8.8 在国内对微信域名易返回污染 IP，导致 extshort 下行 0B；改回阿里/腾讯 DNS，与 dns-server 一致
+hijack-dns = 223.5.5.5:53, 119.29.29.29:53
+real-ip = *.msftncsi.com, *.msftconnecttest.com, *.srv.nintendo.net, *.stun.playstation.net, xbox.*.microsoft.com, *.xboxlive.com, *.battlenet.com.cn, *.battlenet.com, *.blzstatic.cn, *.battle.net, *.turn.twilio.com, *.stun.twilio.com, stun.syncthing.net, stun.*, 127.*.*.*.sslip.io, 127-*-*-*.sslip.io, *.127.*.*.*.sslip.io, *-127-*-*-*.sslip.io, 127.*.*.*.nip.io, 127-*-*-*.nip.io, *.127.*.*.*.nip.io, *-127-*-*-*.nip.io
+geoip-url = https://github.com/Hackl0us/GeoIP2-CN/raw/release/Country.mmdb
+proxy-test-url = http://cp.cloudflare.com/generate_204
 internet-test-url = http://connectivitycheck.platform.hicloud.com/generate_204
-# 节点测试URL
-proxy-test-url = http://www.gstatic.com/generate_204
-# 资源解析器
+test-timeout = 5
 resource-parser = https://github.com/sub-store-org/Sub-Store/releases/latest/download/sub-store-parser.loon.min.js
-# GeoIP数据库
-geoip-url = https://geodata.kelee.one/Country-Masaiki.mmdb
-# ASN数据库
-ipasn-url = https://geodata.kelee.one/GeoLite2-ASN-P3TERX.mmdb
-# 绕过代理
-skip-proxy = 192.168.0.0/16,10.0.0.0/8,172.16.0.0/12,localhost,*.local,e.crashlynatics.com
-# 绕过路由
+interface-mode = Auto
+udp-fallback-mode = REJECT
+disable-stun = true
+domain-reject-mode = DNS
+dns-reject-mode = LOOPBACKIP
+skip-proxy = 127.0.0.0/8, 192.168.0.0/16, 10.0.0.0/8, 172.16.0.0/12, 100.64.0.0/10, 162.14.0.0/16, 211.99.96.0/19, 162.159.192.0/24, 162.159.193.0/24, 162.159.195.0/24, fc00::/7, fe80::/10, localhost, *.local, captive.apple.com, passenger.t3go.cn, *.ccb.com, wxh.wo.cn, *.abcchina.com, *.abcchina.com.cn
 bypass-tun = 10.0.0.0/8,100.64.0.0/10,127.0.0.0/8,169.254.0.0/16,172.16.0.0/12,192.0.0.0/24,192.0.2.0/24,192.88.99.0/24,192.168.0.0/16,198.51.100.0/24,203.0.113.0/24,224.0.0.0/4,255.255.255.255/32
-
+allow-wifi-access = false
 
 [Proxy]
+新加坡-hy2 = hysteria2, REDACTED, REDACTED, REDACTED, salamander-password=REDACTED, skip-cert-verify=true, tls-name=REDACTED
+韩国-春川-VMess = vmess, REDACTED, REDACTED, auto, REDACTED, alterId=0
+日本-东京-VMess = vmess, REDACTED, REDACTED, auto, REDACTED, alterId=0, transport=ws, path=REDACTED, host=www.bing.com
+# Loon 转换清单里没有 TUIC 类型（Sub-Store Loon 目标清单、Xboard Loon 处理器均无 TUIC），此行在 Loon 里会报语法错误，已注释；Surge 侧仍可用，东京仍有 VMess、HY2、AnyTLS 三条。
+# 日本-东京-TUIC = tuic, REDACTED, REDACTED, REDACTED, REDACTED, skip-cert-verify=true, tls-name=REDACTED
+日本-东京-HY2 = hysteria2, REDACTED, REDACTED, REDACTED, skip-cert-verify=true, tls-name=REDACTED, server-cert-fingerprint-sha256=REDACTED
+日本-东京-AnyTLS = anytls, REDACTED, REDACTED, REDACTED, skip-cert-verify=true, tls-name=REDACTED
+日本-大阪2-HY2 = hysteria2, REDACTED, REDACTED, REDACTED, skip-cert-verify=true
 
-# ⚠️ 此处为 Loon 自动生成的本地节点列表，请保持原样，无需手动修改 ⚠️
-
-
-# ====================================================================================
-# 🟢 节点订阅 [Remote Proxy] 🟢
-# ⚠️ 请在此处添加您的订阅链接 ⚠️
-# ====================================================================================
-[Remote Proxy]
-
-
-
-# ====================================================================================
-# 🟢 节点筛选 [Remote Filter] 🟢 (用于区分本地和订阅节点)
-# ====================================================================================
-[Remote Filter]
-Local-ALL = NameRegex,Local, FilterKey = "^(?=.*(.))(?!.*((?i)群|邀请|返利|循环|官网|客服|网站|网址|获取|订阅|流量|总计|到期|机场|下次|重置|重新|设置|版本|官址|备用|过期|已用|联系|邮箱|工单|贩卖|通知|倒卖|防止|国内|地址|频道|无法|说明|使用|提示|特别|访问|支持|教程|关注|更新|作者|加入|超时|收藏|(\b(USE|USED|TOTAL|EXPIRE|EMAIL|Panel|Channel|Author|Traffic)(\d+)?\b|(\d{4}-\d{2}-\d{2}|\dG)))).*$"
-Sub-ALL = NameRegex, FilterKey = "^(?=.*(.))(?!.*((?i)群|邀请|返利|循环|官网|客服|网站|网址|获取|订阅|流量|总计|到期|机场|下次|重置|重新|设置|版本|官址|备用|过期|已用|联系|邮箱|工单|贩卖|通知|倒卖|防止|国内|地址|频道|无法|说明|使用|提示|特别|访问|支持|教程|关注|更新|作者|加入|超时|收藏|(\b(USE|USED|TOTAL|EXPIRE|EMAIL|Panel|Channel|Author|Traffic)(\d+)?\b|(\d{4}-\d{2}-\d{2}|\dG)))).*$"
-KR_Filter = NameRegex, FilterKey = "^(?=.*((?i)🇰🇷|韩国|韓|首尔|(\b(KR|KOR|Korea)(\d+)?\b)))(?!.*((?i)回国|校园|游戏|🎮|(\b(GAME)\b))).*$"
-JP_Filter = NameRegex, FilterKey = "^(?=.*((?i)🇯🇵|日本|川日|东京|大阪|泉日|埼玉|(\b(JP|JPN|Japan)(\d+)?\b)))(?!.*((?i)回国|校园|游戏|🎮|(\b(GAME)\b))).*$"
-SG_Filter = NameRegex, FilterKey = "^(?=.*((?i)🇸🇬|新加坡|狮|(\b(SG|SGP|Singapore)(\d+)?\b)))(?!.*((?i)回国|校园|游戏|🎮|(\b(GAME)\b))).*$"
-UK_Filter = NameRegex, FilterKey = "^(?=.*((?i)🇬🇧|英国|伦敦|(\b(UK|GB|GBR|United Kingdom|Britain)(\d+)?\b)))(?!.*((?i)回国|校园|游戏|🎮|(\b(GAME)(\d+)?\b))).*$"
-TW_Filter = NameRegex, FilterKey = "^(?=.*((?i)🇹🇼|🇨🇳|台湾|台北|(\b(TW|TWN|Tai|Taiwan)(\d+)?\b)))(?!.*((?i)回国|校园|游戏|🎮|(\b(GAME)(\d+)?\b))).*$"
-HK_Filter = NameRegex, FilterKey = "^(?=.*((?i)🇭🇰|香港|(\b(HK|HKG|Hong|Hong Kong)(\d+)?\b)))(?!.*((?i)回国|校园|游戏|🎮|(\b(GAME)(\d+)?\b))).*$"
-US_Filter = NameRegex, FilterKey = "^(?=.*((?i)🇺🇸|美国|波特兰|达拉斯|俄勒冈|凤凰城|费利蒙|硅谷|拉斯维加斯|洛杉矶|圣何塞|圣克拉拉|西雅图|芝加哥|(\b(US|USA|United States|America)(\d+)?\b)))(?!.*((?i)回国|校园|游戏|🎮|(\b(GAME)(\d+)?\b))).*$"
-Other_Filter = NameRegex, FilterKey = "^(?!.*((?i)🇭🇰|🇲🇴|🇹🇼|🇯🇵|🇰🇷|🇸🇬|🇺🇸|🇬🇧|香港|澳门|台湾|日本|川日|东京|大阪|泉日|埼玉|韩国|韓|首尔|新加坡|狮|美国|波特兰|达拉斯|俄勒冈|凤凰城|费利蒙|硅谷|拉斯维加斯|洛杉矶|圣何塞|圣克拉拉|西雅图|芝加哥|英国|伦敦|群|邀请|返利|循环|官网|客服|网站|网址|获取|订阅|流量|总计|到期|机场|下次|重置|重新|设置|版本|官址|备用|过期|已用|联系|邮箱|工单|贩卖|通知|倒卖|防止|国内|地址|频道|无法|说明|使用|提示|特别|访问|支持|教程|关注|更新|作者|加入|超时|收藏|回国|校园|游戏|免登|🎮|(\b(HK|HKG|Hong|Hong Kong|MO|MAC|Oman|Macau|Macao|TW|TWN|Tai|Taiwan|JP|JPN|Japan|KR|KOR|Korea|SG|SGP|Singapore|US|USA|United States|America|UK|GB|GBR|United Kingdom|Britain|USE|USED|TOTAL|EXPIRE|EMAIL|GAME|Panel|Channel|Author|Traffic)(\d+)?\b|(\d{4}-\d{2}-\d{2}|\dG)))).*$"
-
-# ====================================================================================
-# 🟢 策略组 [Proxy Group] - 核心区域  🟢
-# ====================================================================================
 [Proxy Group]
-手动选择 = select,DIRECT,时延优选,故障转移,负载均衡,JP_Auto,SG_Auto,KR_Auto,UK_Auto,TW_Auto,HK_Auto,US_Auto,Other_Auto,Local,Global,img-url = https://raw.githubusercontent.com/sooyaaabo/Loon/main/Icon/Other-Icon/Select.png
-时延优选 = url-test,JP_Auto,SG_Auto,KR_Auto,UK_Auto,TW_Auto,HK_Auto,US_Auto,Other_Auto,interval = 60,tolerance = 50,img-url = https://raw.githubusercontent.com/sooyaaabo/Loon/main/Icon/Other-Icon/UrlTest.png
-故障转移 = fallback,JP_Auto,SG_Auto,KR_Auto,UK_Auto,TW_Auto,HK_Auto,US_Auto,Other_Auto,interval = 60,max-timeout = 2000,img-url = https://raw.githubusercontent.com/sooyaaabo/Loon/main/Icon/Other-Icon/Fallback.png
-负载均衡 = load-balance,JP_Auto,SG_Auto,KR_Auto,UK_Auto,TW_Auto,HK_Auto,US_Auto,Other_Auto,interval = 60,max-timeout = 2000,algorithm = pcc,img-url = https://raw.githubusercontent.com/sooyaaabo/Loon/main/Icon/Other-Icon/LoadBalance.png
-Local = url-test,Local-ALL,interval = 60,tolerance = 50,img-url = https://raw.githubusercontent.com/Orz-3/mini/master/Color/China.png
-Global = select,Sub-ALL,img-url = https://raw.githubusercontent.com/sooyaaabo/Loon/main/Icon/Flag-Icon/WorldMap.png
+🕹 终极清单 = select, 日本节点, 韩国节点, 新加坡节点, DIRECT, img-url = https://raw.githubusercontent.com/Orz-3/mini/master/Color/Final.png
+🍎 苹果服务 = select, DIRECT, 日本节点, 韩国节点, 新加坡节点, img-url = https://raw.githubusercontent.com/Rabbit-Spec/Surge/Master/Conf/icon/Apple_Arcade.png
+🎵 Spotify = select, 日本节点, 韩国节点, 新加坡节点, DIRECT, img-url = https://raw.githubusercontent.com/Rabbit-Spec/Surge/Master/Conf/icon/Spotify.png
+🔍 Bing = select, DIRECT, 日本节点, 韩国节点, 新加坡节点, img-url = https://raw.githubusercontent.com/Orz-3/mini/master/Color/Bing.png
+🪟 微软服务 = select, DIRECT, 日本节点, 韩国节点, 新加坡节点, img-url = https://raw.githubusercontent.com/Orz-3/mini/master/Color/Microsoft.png
+🛑 广告拦截 = select, REJECT, 日本节点, 韩国节点, 新加坡节点, DIRECT
+日本节点 = select, 日本-东京-VMess, 日本-东京-HY2, 日本-东京-AnyTLS, 日本-大阪2-HY2, img-url = https://raw.githubusercontent.com/Rabbit-Spec/Surge/Master/Conf/icon/Country-Japan.png
+韩国节点 = select, 韩国-春川-VMess, img-url = https://raw.githubusercontent.com/Rabbit-Spec/Surge/Master/Conf/icon/Country-South_Korea.png
+新加坡节点 = select, 新加坡-hy2, img-url = https://raw.githubusercontent.com/Rabbit-Spec/Surge/Master/Conf/icon/Country-Singapore.png
 
-# P1. 各地区自动优选策略组 (Url-test) 
-JP_Auto = url-test,JP_Filter,interval = 60,tolerance = 50,img-url = https://raw.githubusercontent.com/Orz-3/mini/master/Color/JP.png
-KR_Auto = url-test,KR_Filter,interval = 60,tolerance = 50,img-url = https://raw.githubusercontent.com/Orz-3/mini/master/Color/KR.png
-SG_Auto = url-test,SG_Filter,interval = 60,tolerance = 50,img-url = https://raw.githubusercontent.com/Orz-3/mini/master/Color/SG.png
-UK_Auto = url-test,UK_Filter,interval = 60,tolerance = 50,img-url = https://raw.githubusercontent.com/Orz-3/mini/master/Color/UK.png
-TW_Auto = url-test,TW_Filter,interval = 60,tolerance = 50,img-url = https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/TW.png
-HK_Auto = url-test,HK_Filter,interval = 60,tolerance = 50,img-url = https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/HK.png
-US_Auto = url-test,US_Filter,interval = 60,tolerance = 50,img-url = https://raw.githubusercontent.com/Orz-3/mini/master/Color/US.png
-Other_Auto = url-test,Other_Filter,interval = 60,tolerance = 50,img-url = https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/UN.png
-
-# P2. AI Services 独立策略组 (优先使用 US/UK 等)
-AI_Auto = url-test,US_Auto,UK_Auto,SG_Auto,JP_Auto,HK_Auto,TW_Auto,Other_Auto,interval = 60,tolerance = 50,img-url = https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/Bot.png
-Google Gemini = select,AI_Auto,US_Auto,UK_Auto,DIRECT,img-url = https://raw.githubusercontent.com/luestr/IconResource/main/App_icon/120px/GoogleGemini.png
-xAI Grok = select,AI_Auto,US_Auto,UK_Auto,DIRECT,img-url = https://raw.githubusercontent.com/luestr/IconResource/main/App_icon/120px/Grok.png
-ChatGPT = select,AI_Auto,US_Auto,UK_Auto,DIRECT,img-url = https://raw.githubusercontent.com/sooyaaabo/Loon/main/Icon/App-Icon/ChatGPT.png
-
-# P3. 独立 App 手动选择策略组
-TikTok = select,SG_Auto,JP_Auto,KR_Auto,UK_Auto,TW_Auto,HK_Auto,时延优选,DIRECT,负载均衡,img-url = https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/TikTok.png
-Spotify = select,UK_Auto,SG_Auto,JP_Auto,KR_Auto,时延优选,DIRECT,img-url = https://raw.githubusercontent.com/Orz-3/mini/master/Color/Spotify.png
-Telegram = select,故障转移,SG_Auto,KR_Auto,JP_Auto,UK_Auto,DIRECT,img-url = https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/Telegram_X.png
-YouTube = select,时延优选,US_Auto,TW_Auto,HK_Auto,SG_Auto,KR_Auto,JP_Auto,UK_Auto,DIRECT,负载均衡,img-url = https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/YouTube.png
-X (Twitter) = select,时延优选,US_Auto,SG_Auto,KR_Auto,JP_Auto,UK_Auto,DIRECT,负载均衡,img-url = https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/Twitter.png
-Reddit = select,时延优选,US_Auto,JP_Auto,KR_Auto,SG_Auto,UK_Auto,DIRECT,负载均衡,img-url = https://raw.githubusercontent.com/luestr/IconResource/main/App_icon/120px/Reddit.png
-Instagram = select,时延优选,US_Auto,JP_Auto,KR_Auto,SG_Auto,UK_Auto,DIRECT,负载均衡,img-url = https://raw.githubusercontent.com/fmz200/wool_scripts/main/icons/apps/Instagram.png
-BiliBili = select,DIRECT,HK_Auto,TW_Auto,JP_Auto,大陆网址,img-url = https://raw.githubusercontent.com/Orz-3/mini/master/Color/Bili.png
-
-# P4. 国内直连策略组
-大陆网址 = select,DIRECT,HK_Auto,TW_Auto,KR_Auto,JP_Auto,SG_Auto,UK_Auto,img-url = https://raw.githubusercontent.com/Orz-3/mini/master/Color/CN.png
-
-
-# ====================================================================================
-# 🟢 规则 [Rule] - 保持不变 🟢
-# ====================================================================================
 [Rule]
-# Local Rule
-# Type:DOMAIN-SUFFIX,DOMAIN,DOMAIN-KEYWORD,USER-AGENT,URL-REGEX,IP-CIDR,IP-CIDR6,IP-ASN
-# Strategy:DIRECT,Proxy,REJECT
-# Options:no-resolve(no-resolve(only for cidr))
-# IP-CIDR, 192.168.0.0/16, DIRECT
-# IP-CIDR, 10.0.0.0/8, DIRECT
-# IP-CIDR, 172.16.0.0/12, DIRECT
-# IP-CIDR, 127.0.0.0/8, DIRECT
-# 配置文件已自带远程GEOIP, cn, DIRECT规则，请勿在此添加
-# 请勿修改远程CN REGION规则的排序甚至删除
+# 微信登录直连例外（rejectAd 远程表在前，会先命中微信登录域；本地规则在远程之前，这里先放行，免得微信点开转圈）
+DOMAIN,apd-pcdnwxlogin.teg.tencent-cloud.net,DIRECT
+DOMAIN-SUFFIX,wup.imtt.qq.com,DIRECT
+DOMAIN,safebrowsing.urlsec.qq.com,DIRECT
+# 彩云广告专属域名，解锁脚本版补回开屏/广告请求拦截，biz/starplucker 主域名不在此列，不影响 VIP
+DOMAIN,ad.cyapi.cn,REJECT
+# 开屏广告补丁（贴吧/联通/电信三 App 共用广告 SDK 域名，置顶于本地规则，绕过 GEOIP,CN,DIRECT 的前置影响；域名均出自 Advertising 表关键词/URL-REGEX 或百度/腾讯广告平台惯用子域名，ad 子域名两条未在表里核实，实测为准）
+DOMAIN-SUFFIX,mobads.baidu.com,REJECT
+DOMAIN-SUFFIX,union.baidu.com,REJECT
+DOMAIN-SUFFIX,cpro.baidu.com,REJECT
+DOMAIN-SUFFIX,pos.baidu.com,REJECT
+DOMAIN-SUFFIX,gdt.qq.com,REJECT
+DOMAIN-SUFFIX,ad.qq.com,REJECT
+DOMAIN,bds.snssdk.com,REJECT
+DOMAIN,extlog.snssdk.com,REJECT
+DOMAIN,sdfp.snssdk.com,REJECT
+DOMAIN-KEYWORD,pangolin-sdk-toutiao,REJECT
+DOMAIN-SUFFIX,ad.10010.com,REJECT
+DOMAIN-SUFFIX,ad.189.cn,REJECT
+# 有道词典淘宝开屏补丁（fmz200 rejectAd 里阿里系一段是注释掉的，tanx/atanx/alimama/mmstat 不生效，淘宝开屏就从这里漏出来；以下只封广告/追踪子域，不封 alicdn 主 CDN 与淘宝购物主域）
+DOMAIN-SUFFIX,tanx.com,REJECT
+DOMAIN-SUFFIX,atanx.alicdn.com,REJECT
+DOMAIN-SUFFIX,atanx2.alicdn.com,REJECT
+DOMAIN-SUFFIX,alimama.com,REJECT
+# filterFix 原意保留，淘宝商家统计用，不随 mmstat 后缀一起封
+DOMAIN,log.mmstat.com,DIRECT
+# filterFix 原意保留，淘宝商家用
+DOMAIN,sycm.mmstat.com,DIRECT
+DOMAIN-SUFFIX,mmstat.com,REJECT
+DOMAIN-SUFFIX,simba.taobao.com,REJECT
+# 有道词典开屏（用户 07:03 请求记录：backendmarket.youdao.com 与 dict/video-qa/api-overmind 同秒启动，backendmarket 字面即广告市场，且不在 rejectAd 与 China 表里，走 FINAL 放行；只封它，不封词典主接口）
+DOMAIN,backendmarket.youdao.com,REJECT
+# 有道主接口逐个直连，不用 youdao.com 后缀直连：后缀会抢在远程 rejectAd 之前，把 gorgon/dsp/union 等广告域名也放行；backendmarket 在上一条已先 REJECT
+DOMAIN,dict.youdao.com,DIRECT
+DOMAIN,video-qa.youdao.com,DIRECT
+DOMAIN,api-overmind.youdao.com,DIRECT
+DOMAIN,fanyiegg.youdao.com,DIRECT
+DOMAIN,cdke.youdao.com,DIRECT
+# filterFix 内联置顶（fmz200，沿用 Surge 最新版已验证的内联行，逐条保留原策略）
+DOMAIN,ad.12306.cn,DIRECT
+DOMAIN-KEYWORD,anti-ad.net,DIRECT
+DOMAIN,log.mmstat.com,DIRECT
+DOMAIN,sycm.mmstat.com,DIRECT
+DOMAIN,static.jssp.tv,DIRECT
+DOMAIN,lain.bgm.tv,DIRECT
+DOMAIN,tiao.cjkypo.com,DIRECT
+DOMAIN,ok.zuidapic.com,DIRECT
+DOMAIN,ts.thefilehosting.com,DIRECT
+DOMAIN,deo.shopeemobile.com,DIRECT
+DOMAIN,m3u8.255tv.tk,DIRECT
+DOMAIN,m3u8.mstopq.com,DIRECT
+DOMAIN,ain.bgm.tv,DIRECT
+DOMAIN-KEYWORD,vip.lz-cdn,DIRECT
+DOMAIN-KEYWORD,ax1x.com,DIRECT
+DOMAIN-KEYWORD,o.lencr.org,DIRECT
+DOMAIN-KEYWORD,ttcdn-tos.kkimg.cc,DIRECT
+DOMAIN,sdk.alibaba.com.ailbaba.me,DIRECT
+DOMAIN,img.ffzypic.com,DIRECT
+DOMAIN,img.liangzipic.com,DIRECT
+DOMAIN,img.bfzypic.com,DIRECT
+DOMAIN,img.kuaikanzy.net,DIRECT
+DOMAIN,vip.imgffzy.com,DIRECT
+DOMAIN,vip.ffzyread.com,DIRECT
+DOMAIN,cdn.jsdelivr.net,DIRECT
+DOMAIN,image.maimn.com,DIRECT
+DOMAIN-KEYWORD,bfzycdn.com,DIRECT
+DOMAIN-KEYWORD,vip.kuaikan-cdn,DIRECT
+DOMAIN-KEYWORD,vip.ffzy-play,DIRECT
+DOMAIN-KEYWORD,vip.ffzy-online,DIRECT
+DOMAIN-KEYWORD,push.apple.com,DIRECT
+DOMAIN,time.apple.com,DIRECT
+DOMAIN-KEYWORD,weather-edge.apple.com,DIRECT
+DOMAIN-KEYWORD,weather-adge.apple.com,DIRECT
+DOMAIN-SUFFIX,weather-data.apple.com,DIRECT
+DOMAIN-SUFFIX,weather-map.apple.com,DIRECT
+DOMAIN-SUFFIX,weather-analytics-events.apple.com,DIRECT
+DOMAIN-KEYWORD,buy.itunes.apple.com,DIRECT
+DOMAIN-KEYWORD,icloud.com,DIRECT
+DOMAIN-KEYWORD,api.smoot.apple.com,DIRECT
+DOMAIN-KEYWORD,api.smoot.apple.cn,DIRECT
+DOMAIN,init.ess.apple.com,DIRECT
+DOMAIN,smp-device-content.apple.com,DIRECT
+DOMAIN-KEYWORD,ssl.apple.com,DIRECT
+DOMAIN-KEYWORD,humb.apple.com,DIRECT
+DOMAIN-KEYWORD,api-adservices.apple.com,DIRECT
+DOMAIN-KEYWORD,ls.apple.com,DIRECT
+DOMAIN-KEYWORD,gsa.apple.com,DIRECT
+DOMAIN-KEYWORD,ess.apple.com,DIRECT
+DOMAIN,itunes.apple.com,DIRECT
+DOMAIN-KEYWORD,amp-api.podcasts.apple.com,🕹 终极清单
+DOMAIN-KEYWORD,ctc.qzs.qzone.qq.com,DIRECT
+DOMAIN,analytics.strava.com,DIRECT
+DOMAIN,fairplay.l.qq.com,DIRECT
+DOMAIN,livew.l.qq.com,DIRECT
+DOMAIN,vd.l.qq.com,DIRECT
+DOMAIN,vi.l.qq.com,DIRECT
+DOMAIN,msg.umeng.com,DIRECT
+DOMAIN,msg.umengcloud.com,DIRECT
+DOMAIN-KEYWORD,aw-s.tripcdn.com,DIRECT
+DOMAIN-KEYWORD,trip.com,DIRECT
+IP-CIDR,192.168.0.1/24,DIRECT
+IP-CIDR,192.168.1.1/24,DIRECT
+DOMAIN,gather.colorfulclouds.net,REJECT
+# GEOIP,CN,DIRECT 已删（大佬 Loon 配置做法：本地不放 GEOIP，免得抢在远程去广告表之前命中国内广告 IP；国内直连由远程 China.list 在去广告表之后承担）
+FINAL,🕹 终极清单
 
-# --- 将您的规则添加到 FINAL 规则的上方 ---
-
-# ----------------------------------------
-
-FINAL,手动选择
-
-
-
-# ====================================================================================
-# 🟢 远程规则 [Remote Rule] - (修正规则优先级) 🟢
-# ====================================================================================
 [Remote Rule]
+https://raw.githubusercontent.com/fmz200/wool_scripts/main/Loon/rule/rejectAd.list, policy=🛑 广告拦截, tag=rejectAd@fmz200, enabled=true
+https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Loon/Advertising/Advertising.list, policy=🛑 广告拦截, tag=Advertising@bm7, enabled=true
+https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Loon/Hijacking/Hijacking.list, policy=🛑 广告拦截, tag=Hijacking@bm7, enabled=true
+https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Loon/WeChat/WeChat.list, policy=DIRECT, tag=WeChat@bm7, enabled=true
+https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Loon/Bing/Bing.list, policy=🔍 Bing, tag=Bing@bm7, enabled=true
+https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Loon/Apple/Apple.list, policy=🍎 苹果服务, tag=Apple@bm7, enabled=true
+https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Loon/Spotify/Spotify.list, policy=🎵 Spotify, tag=Spotify@bm7, enabled=false
+https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Loon/China/China.list, policy=DIRECT, tag=China@bm7, enabled=true
+https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Loon/Microsoft/Microsoft.list, policy=🪟 微软服务, tag=Microsoft@bm7, enabled=true
+https://github.com/fmz200/wool_scripts/raw/main/Loon/rule/LAN.list, policy=DIRECT, tag=LAN@fmz200, enabled=true
 
-# P1. 远程广告拦截 (最高优先级，尽早 REJECT 垃圾流量)
-https://github.com/fmz200/wool_scripts/raw/main/Loon/rule/rejectAd.list, policy=REJECT, tag=广告拦截合集, enabled=true
-
-# P2. 局域网直连
-https://kelee.one/Tool/Loon/Lsr/LAN_SPLITTER.lsr, policy=DIRECT, tag=LAN, enabled=true
-
-# P3. 国内分流 (提前至此，确保大部分国内流量优先直连)
-https://kelee.one/Tool/Loon/Lsr/REGION_SPLITTER.lsr, policy=大陆网址, tag=CN REGION, enabled=true
-https://rule.kelee.one/Loon/ChinaMax.lsr, policy=大陆网址, tag=ChinaMax, enabled=false
-
-# P4. 定制 App 域名分流 (只处理需代理的 App)
-https://rule.kelee.one/Loon/Telegram.lsr, policy=Telegram, tag=Telegram_Domain, enabled=true
-https://rule.kelee.one/Loon/Spotify.lsr, policy=Spotify, tag=Spotify_Domain, enabled=true
-https://kelee.one/Tool/Loon/Lsr/TikTok.lsr, policy=TikTok, tag=TikTok_Domain, enabled=true
-https://rule.kelee.one/Loon/YouTube.lsr, policy=YouTube, tag=YouTube_Domain, enabled=true
-https://rule.kelee.one/Loon/Twitter.lsr, policy=X (Twitter), tag=Twitter_Domain, enabled=true
-https://rule.kelee.one/Loon/Reddit.lsr, policy=Reddit, tag=Reddit_Domain, enabled=true
-https://rule.kelee.one/Loon/Instagram.lsr, policy=Instagram, tag=Instagram_Domain, enabled=true
-https://rule.kelee.one/Loon/Gemini.lsr, policy=Google Gemini, tag=Google_Gemini_Domain, enabled=true
-https://kelee.one/Tool/Loon/Lsr/Grok.lsr, policy=xAI Grok, tag=xAI_Grok_Domain, enabled=true
-https://rule.kelee.one/Loon/OpenAI.lsr, policy=ChatGPT, tag=ChatGPT_Domain, enabled=true
-https://rule.kelee.one/Loon/BiliBili.lsr, policy=BiliBili, tag=BiliBili_Domain, enabled=true
-
-# P5. 全局/兜底规则 (最低优先级)
-https://rule.kelee.one/Loon/Global.lsr, policy=手动选择, tag=Global_CatchAll, enabled=true
-
-[Host]
-
-
-[Rewrite]
+[Plugin]
+# 工具类：直链已由 fmz200 Loon.conf 原文验证，policy 指向终极清单
+https://raw.githubusercontent.com/sub-store-org/Sub-Store/master/config/Loon.plugin, policy=🕹 终极清单, enabled=true
+https://raw.githubusercontent.com/chavyleung/scripts/master/box/rewrite/boxjs.rewrite.loon.plugin, policy=🕹 终极清单, enabled=true
+https://raw.githubusercontent.com/Script-Hub-Org/Script-Hub/main/modules/script-hub.loon.plugin, policy=🕹 终极清单, enabled=true
+# 三项重写之 Spotify：直链已由 fmz200 原文引用、插件本体已读，MitM 域名见 [Mitm] 段
+https://raw.githubusercontent.com/001ProMax/Surge/main/Loon/Spotify.plugin, img-url=https://raw.githubusercontent.com/fmz200/wool_scripts/main/icons/apps/spotify.png, enabled=true
+# 以下插件本轮未找到可验证直链，一律注释占位，不编造 URL。
+# 请在 Loon 内插件中心 / 可莉站内按名添加，添加后取消注释并填入实际 URL 再导入。
+# Block_HTTPDNS：旧样本启用，可莉 / sooyaaabo 二手摘要称置顶，未验证直链
+# BlockAdvertisers：旧样本启用，可莉 / sooyaaabo 二手摘要称置顶，未验证直链
+# Remove_ads_by_keli：旧样本启用，未验证直链
+# qx-rewrites.loon.plugin 已作废，不再用，脚本以本配置 [Script] 段为准。
 
 [Script]
+# 直接写进主配置，Loon 3.5.1+ 新语法，来源是用户自用 Surge 模块 qx-rewrites.sgmodule，脚本本体未改，脚本路径直指原作者仓库。
+# 注意：响应脚本按配置顺序首条完全匹配者胜出，彩云各条 pattern 互不重叠，趋势修复是 request 段，与 response 段不抢位置。
+response if ${url} ~= /^https:\/\/wrapper\.cyapi\.cn\/v1\/activity\?app_name=weather/i then script("https://raw.githubusercontent.com/wf021325/qx/master/js/caiyun.js") with tag="彩云赏叶赏花", requires_body=true
+response if ${url} ~= /^https:\/\/biz\.cyapi\.cn\/v2\/user/i then script("https://raw.githubusercontent.com/wf021325/qx/master/js/caiyun.js") with tag="彩云旧版VIP", requires_body=true
+request if ${url} ~= /^https:\/\/wrapper\.cyapi\.cn\/v1\/(satellite|nafp\/origin_images)/i then script("https://raw.githubusercontent.com/wf021325/qx/master/js/caiyun.js") with tag="彩云卫星云图"
+response if ${url} ~= /^https?:\/\/biz\.cyapi\.cn\/api\/v1\/user_detail$/i then script("https://raw.githubusercontent.com/wf021325/qx/master/js/caiyun.js") with tag="彩云显示VIP", requires_body=true
+request if ${url} ~= /^https:\/\/starplucker\.cyapi\.cn\/v3\//i then script("https://raw.githubusercontent.com/wf021325/qx/master/js/caiyun.js") with tag="彩云趋势修复", requires_body=true
+response if ${url} ~= /^https:\/\/starplucker\.cyapi\.cn\/v3\/operation\/banners\?user_type=/i then script("https://raw.githubusercontent.com/wf021325/qx/master/js/caiyun.js") with tag="彩云发现轮播", requires_body=true
+response if ${url} ~= /^https:\/\/starplucker\.cyapi\.cn\/v3\/operation\/features\?user_type=/i then script("https://raw.githubusercontent.com/wf021325/qx/master/js/caiyun.js") with tag="彩云发现宫格", requires_body=true
+response if ${url} ~= /^https:\/\/starplucker\.cyapi\.cn\/v3\/campaigns$/i then script("https://raw.githubusercontent.com/wf021325/qx/master/js/caiyun.js") with tag="彩云官方活动", requires_body=true
+response if ${url} ~= /^https:\/\/starplucker\.cyapi\.cn\/v3\/operation\/feeds/i then script("https://raw.githubusercontent.com/wf021325/qx/master/js/caiyun.js") with tag="彩云瀑布流", requires_body=true
+response if ${url} ~= /^https:\/\/api\.tipsoon\.com\/api\/v1\/user\/info/i then script("https://raw.githubusercontent.com/89996462/Quantumult-X/main/ycdz/JX.js") with tag="简讯VIP", requires_body=true
+response if ${url} ~= /https:\/\/(api|api-cs)\.intsig\.net\/purchase\/cs\/query_property\?/i then script("https://raw.githubusercontent.com/NobyDa/Script/master/Surge/JS/CamScanner.js") with tag="扫描全能王", requires_body=true
 
-[Remote Script]
-https://github.com/fmz200/wool_scripts/raw/main/Loon/script/tasks.scripts, tag=定时任务合集@fmz200, enabled=false
-https://raw.githubusercontent.com/Moli-X/Resources/main/Loon/Task.conf, tag=脚本合集, enabled=true
-
-# ====================================================================================
-# 🟢 插件 [Plugin] - (精简冗余并禁用不常用国内App插件) 🟢
-# ====================================================================================
-[Plugin]
-
-https://kelee.one/Tool/Loon/Lpx/Block_HTTPDNS.lpx, enabled=true
-https://kelee.one/Tool/Loon/Lpx/BlockAdvertisers.lpx, enabled=true
-https://kelee.one/Tool/Loon/Lpx/Remove_ads_by_keli.lpx, enabled=true
-http://script.hub/file/_start_/https://github.com/fmz200/wool_scripts/raw/main/QuantumultX/rewrite/rewrite.snippet/_end_/rewrite.plugin?type=qx-rewrite&target=loon-plugin&del=true&jqEnabled=true, enabled=false
-
-https://kelee.one/Tool/Loon/Lpx/Reddit_remove_ads.lpx, enabled=true
-http://script.hub/file/_start_/https://raw.githubusercontent.com/app2smile/rules/master/module/spotify.conf/_end_/spotify.plugin?type=qx-rewrite&target=loon-plugin&del=true&jqEnabled=true, img-url=https://raw.githubusercontent.com/luestr/IconResource/main/App_icon/120px/Spotify.png, enabled=true
-http://script.hub/file/_start_/https://raw.githubusercontent.com/WeiGiegie/666/main/ximalayajisuban.js/_end_/ximalayajisuban.plugin?type=qx-rewrite&target=loon-plugin&del=true&jqEnabled=true, tag=喜马拉雅极速, img-url=https://raw.githubusercontent.com/luestr/IconResource/main/App_icon/120px/Himalaya.png, enabled=false
-http://script.hub/file/_start_/https://whatshub.top/rewrite/CamScanner.conf/_end_/CamScanner.plugin?type=qx-rewrite&target=loon-plugin&del=true&jqEnabled=true, enabled=true
-https://raw.githubusercontent.com/deezertidal/private/master/plugallery/jianxun.plugin, enabled=true
-http://script.hub/file/_start_/https://raw.githubusercontent.com/WeiGiegie/666/main/keep.js/_end_/keep.plugin?type=qx-rewrite&target=loon-plugin&del=true&jqEnabled=true, img-url=https://raw.githubusercontent.com/luestr/IconResource/main/App_icon/120px/Keep.png, enabled=true
-https://kelee.one/Tool/Loon/Lpx/YouTube_remove_ads.lpx, enabled=false
-https://raw.githubusercontent.com/deezertidal/private/master/plugallery/wechatad.plugin, enabled=true
-https://kelee.one/Tool/Loon/Lpx/Weixin_Official_Accounts_remove_ads.lpx, enabled=true
-https://kelee.one/Tool/Loon/Lpx/Weixin_external_links_unlock.lpx, enabled=true
-https://kelee.one/Tool/Loon/Lpx/WexinMiniPrograms_Remove_ads.lpx, enabled=true
-https://github.com/Moli-X/Tool/raw/X/Loon/Plugin/Kelee/Taobao_remove_ads.plugin, policy=DIRECT, tag=淘宝去广告优化, enabled=true
-https://raw.githubusercontent.com/sooyaaabo/Loon/main/Plugin/Bank.lpx, enabled=true
-https://raw.githubusercontent.com/sooyaaabo/Loon/main/Plugin/ChinaUnicom.lpx, enabled=true
-https://raw.githubusercontent.com/sooyaaabo/Loon/main/Plugin/ColorfulCloudsWeatherPro.lpx, enabled=true
-https://raw.githubusercontent.com/sooyaaabo/Loon/main/Plugin/Amap.lpx, enabled=true
-https://raw.githubusercontent.com/sooyaaabo/Loon/main/Plugin/Railway12306.lpx, enabled=true
-https://raw.githubusercontent.com/sooyaaabo/Loon/main/Plugin/Taobao.lpx, enabled=true
-https://raw.githubusercontent.com/sooyaaabo/Loon/main/Plugin/Jingdong.lpx, enabled=true
-https://raw.githubusercontent.com/chavyleung/scripts/master/box/rewrite/boxjs.rewrite.loon.plugin, policy=手动选择, tag=BoxJs配置中心, enabled=true
-https://raw.githubusercontent.com/sub-store-org/Sub-Store/master/config/Loon.plugin, policy=手动选择, tag=SubStore订阅管理, enabled=true
-https://raw.githubusercontent.com/Script-Hub-Org/Script-Hub/main/modules/script-hub.loon.plugin, policy=手动选择, tag=ScriptHub脚本中心, enabled=true
-# 移除或禁用其他低频插件以实现简洁目标...
-
-[Remote Rewrite]
+[Rewrite]
+# 官方新语法（Loon 3.5.1+，nsloon.app/en/docs/Rewrite/rewrite_v2）：旧 reject-dict/reject-img 对应新 reject_dict/reject_img，request 阶段，状态码 200。
+# 来源是用户自用 Surge 模块 qx-rewrites.sgmodule 的 10 条去广告规则，URL 与原模块一致，未改路径。
+request if ${url} ~= /^https:\/\/ad\.cyapi\.cn\/v2\/req\?app_name=weather/i then reject_dict(200)
+request if ${url} ~= /^https:\/\/biz\.cyapi\.cn\/p\/v1\/trial_card\/info/i then reject_dict(200)
+request if ${url} ~= /^https:\/\/biz\.cyapi\.cn\/api\/v1\/token\/device$/i then reject_dict(200)
+request if ${url} ~= /^https:\/\/biz\.cyapi\.cn\/p\/v1\/entries/i then reject_dict(200)
+request if ${url} ~= /^https:\/\/starplucker\.cyapi\.cn\/v3\/config$/i then reject_dict(200)
+request if ${url} ~= /^https:\/\/starplucker\.cyapi\.cn\/v3\/notification\/message_center/i then reject_dict(200)
+request if ${url} ~= /^https:\/\/starplucker\.cyapi\.cn\/v3\/config\/cypage\/home\/conditions\/local$/i then reject_dict(200)
+request if ${url} ~= /^https:\/\/starplucker\.cyapi\.cn\/v3\/config\/cypage\/home_activity\/conditions$/i then reject_dict(200)
+request if ${url} ~= /^https:\/\/starplucker\.cyapi\.cn\/v3\/config\/cypage\/40day\/conditions\/local$/i then reject_dict(200)
+request if ${url} ~= /^https?:\/\/api\.tipsoon\.com\/api\/v1\/top\/ad/i then reject_img(200)
 
 [Mitm]
-ca-p12 = 
-hostname =
+hostname = *-spclient.spotify.com, spclient.wg.spotify.com, *.cyapi.cn, ap*.intsig.net, api.tipsoon.com
+ca-p12 =
+ca-passphrase =
 skip-server-cert-verify = false
