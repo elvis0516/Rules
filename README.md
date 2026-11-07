@@ -32,5 +32,5 @@
 
 ## 说明
 
-- `config/` 现为现行配置脱敏版（2026-11-05 同步）；`rewrite/` 与 `filter/` 仍为 2025 年旧存档的整理迁移；2026-11-04 已刷新 MGTV、NetEmusic、XMLYJSVIP、keep、SpotifyVip、YoutubeBlockAD 至上游最新版，其余文件仍为 2025 年旧存档；SpotifyPremium、YoutubeBlockAD 的 Maasea JS、CYTQVIP 的 wf 线走上游 master 实时引用，无需抄。2026-11-05 彩云天气死链替换：CYTQSVIP 的 WeiRen0 cytq.js 地址改用 wf021325 caiyun.js，CYTQVIP 的 chxm 两行改用 wf 规则组（去重后 14 行）。2026-11-05 config/QX、config/Uee、config/Surge 已更新为现行配置脱敏版（替换 2025 年旧存档；旧版原文仍在旧仓库 QuantumultX、Loon 及本地克隆里）。
+- `config/` 现为现行配置脱敏版（2026-11-05 同步）；`rewrite/` 与 `filter/` 仍为 2025 年旧存档的整理迁移；2026-11-04 已刷新 MGTV、NetEmusic、XMLYJSVIP、keep、SpotifyVip、YoutubeBlockAD 至上游最新版；2026-11-07 刷新 APTVunlock、CamScanner、WXGZH 至上游最新版（作者原文件，含 [rewrite_local]/[mitm]，规则与旧 snippet 一致）；WPSVIP 上游为裸脚本、无重写段，仍保留本地 snippet；AptvVIP 仅末尾空行差异、未动；其余文件仍为 2025 年旧存档；SpotifyPremium、YoutubeBlockAD 的 Maasea JS、CYTQVIP 的 wf 线走上游 master 实时引用，无需抄。2026-11-05 彩云天气死链替换：CYTQSVIP 的 WeiRen0 cytq.js 地址改用 wf021325 caiyun.js，CYTQVIP 的 chxm 两行改用 wf 规则组（去重后 14 行）。2026-11-05 config/QX、config/Uee、config/Surge 已更新为现行配置脱敏版（替换 2025 年旧存档；旧版原文仍在旧仓库 QuantumultX、Loon 及本地克隆里）。
 - 迁移时已处理两处明文凭据（Uee 的 ca-passphrase 行删除、SpotifyLRC 的密钥替换为占位），其余文件原文照搬。2026-11-05 同步现行配置时另做脱敏：QX 的 [mitm] passphrase/p12、Loon 的节点信息、Surge 的 [Proxy] 节点信息与 [MITM] 证书均已替换为占位。
