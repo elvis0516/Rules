@@ -1,0 +1,40 @@
+#!name=彩云天气·简讯·扫描全能王
+#!desc=由 QX 重写转换：彩云天气(caiyun.js) / 简讯(JX.js) / 扫描全能王(CamScanner.js)。QX 的 reject-dict/reject-img 在 Surge 里用 - reject 实现。
+#!author=ueechao
+
+[MITM]
+hostname = %APPEND% *.cyapi.cn, ap*.intsig.net, api.tipsoon.com
+
+[URL Rewrite]
+# —— 彩云天气去广告（QX 的 reject-dict → Surge 的 - reject，直接掐掉请求） ——
+^https:\/\/ad\.cyapi\.cn\/v2\/req\?app_name=weather - reject
+^https:\/\/biz\.cyapi\.cn\/p\/v1\/trial_card\/info - reject
+^https:\/\/biz\.cyapi\.cn\/api\/v1\/token\/device$ - reject
+^https:\/\/biz\.cyapi\.cn\/p\/v1\/entries - reject
+^https:\/\/starplucker\.cyapi\.cn\/v3\/config$ - reject
+^https:\/\/starplucker\.cyapi\.cn\/v3\/notification\/message_center - reject
+^https:\/\/starplucker\.cyapi\.cn\/v3\/config\/cypage\/home\/conditions\/local$ - reject
+^https:\/\/starplucker\.cyapi\.cn\/v3\/config\/cypage\/home_activity\/conditions$ - reject
+^https:\/\/starplucker\.cyapi\.cn\/v3\/config\/cypage\/40day\/conditions\/local$ - reject
+# —— 简讯去广告（QX 的 reject-img → Surge 的 - reject） ——
+^https?:\/\/api\.tipsoon\.com\/api\/v1\/top\/ad - reject
+
+[Rule]
+# 彩云天气上传信息（QX 的 filter_local）
+DOMAIN,gather.colorfulclouds.net,REJECT
+
+[Script]
+# —— 彩云天气（caiyun.js，原 QX 脚本，只用基础 API，Surge 可跑） ——
+彩云赏叶赏花 = type=http-response,pattern=^https:\/\/wrapper\.cyapi\.cn\/v1\/activity\?app_name=weather,requires-body=1,script-path=https://raw.githubusercontent.com/wf021325/qx/master/js/caiyun.js
+彩云旧版VIP = type=http-response,pattern=^https:\/\/biz\.cyapi\.cn\/v2\/user,requires-body=1,script-path=https://raw.githubusercontent.com/wf021325/qx/master/js/caiyun.js
+彩云卫星云图 = type=http-request,pattern=^https:\/\/wrapper\.cyapi\.cn\/v1\/(satellite|nafp\/origin_images),script-path=https://raw.githubusercontent.com/wf021325/qx/master/js/caiyun.js
+彩云显示VIP = type=http-response,pattern=^https?:\/\/biz\.cyapi\.cn\/api\/v1\/user_detail$,requires-body=1,script-path=https://raw.githubusercontent.com/wf021325/qx/master/js/caiyun.js
+彩云趋势修复 = type=http-request,pattern=^https:\/\/starplucker\.cyapi\.cn\/v3\/,requires-body=1,script-path=https://raw.githubusercontent.com/wf021325/qx/master/js/caiyun.js
+彩云发现轮播 = type=http-response,pattern=^https:\/\/starplucker\.cyapi\.cn\/v3\/operation\/banners\?user_type=,requires-body=1,script-path=https://raw.githubusercontent.com/wf021325/qx/master/js/caiyun.js
+彩云发现宫格 = type=http-response,pattern=^https:\/\/starplucker\.cyapi\.cn\/v3\/operation\/features\?user_type=,requires-body=1,script-path=https://raw.githubusercontent.com/wf021325/qx/master/js/caiyun.js
+彩云官方活动 = type=http-response,pattern=^https:\/\/starplucker\.cyapi\.cn\/v3\/campaigns$,requires-body=1,script-path=https://raw.githubusercontent.com/wf021325/qx/master/js/caiyun.js
+彩云瀑布流 = type=http-response,pattern=^https:\/\/starplucker\.cyapi\.cn\/v3\/operation\/feeds,requires-body=1,script-path=https://raw.githubusercontent.com/wf021325/qx/master/js/caiyun.js
+# —— 简讯（JX.js，原 QX 脚本，只用 $response/$done） ——
+简讯VIP = type=http-response,pattern=^https:\/\/api\.tipsoon\.com\/api\/v1\/user\/info,requires-body=1,script-path=https://raw.githubusercontent.com/89996462/Quantumult-X/main/ycdz/JX.js
+# —— 扫描全能王（NobyDa 原生 Surge 脚本） ——
+扫描全能王 = type=http-response,pattern=https:\/\/(api|api-cs)\.intsig\.net\/purchase\/cs\/query_property\?,requires-body=1,script-path=https://raw.githubusercontent.com/NobyDa/Script/master/Surge/JS/CamScanner.js
