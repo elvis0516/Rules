@@ -1,0 +1,10 @@
+#!name=Reddit去广告
+#!desc=去除Reddit信息流/帖子广告与TreeAds，去NSFW遮罩，伪装Premium；作者@ddgksf2013（墨鱼）
+#!author=ddgksf2013
+
+[MITM]
+hostname = %APPEND% gql-fed.reddit.com
+
+[Script]
+# —— Reddit GraphQL 去广告（http-response，改 body；脚本为 jsjiami 混淆版） ——
+Reddit去广告 = type=http-response,pattern=^https?:\/\/gql-fed\.reddit\.com\/$,requires-body=1,script-path=https://raw.githubusercontent.com/ddgksf2013/Scripts/refs/heads/master/reddit.js
