@@ -1,13 +1,50 @@
-// Reddit 去广告 - script 版
-// 处理 gql 响应 (JSON 与 text/plain 均按 JSON 解析), 移除推广内容
+// Reddit 去广告 - script 版 v3.1
+// 处理 gql 响应: JSON / NDJSON / text/plain 内嵌 JSON 均尝试解析, 移除推广内容
 // 覆盖根路径与 /v2p 等全部路径
 let body = $response.body;
-let obj;
-try {
-  obj = JSON.parse(body);
-} catch (e) {
-  $done({});
+let obj = null;
+let parsed = false;
+
+function tryParse(s) {
+  try { return JSON.parse(s); } catch (e) { return null; }
 }
+
+// 1) 整体按 JSON 解析
+obj = tryParse(body);
+if (obj !== null) parsed = true;
+
+// 2) 按行解析 NDJSON (每行一个 JSON, 取第一个能解析出的对象/数组)
+if (!parsed) {
+  let lines = body.split(/\r?\n/);
+  let parts = [];
+  for (let ln of lines) {
+    let t = ln.trim();
+    if (!t) continue;
+    let p = tryParse(t);
+    if (p !== null) parts.push(p);
+  }
+  if (parts.length > 0) { obj = parts.length === 1 ? parts[0] : parts; parsed = true; }
+}
+
+// 3) 截取首个 { ... } 或 [ ... ] 片段解析
+if (!parsed) {
+  let s = body.indexOf('{');
+  let e = body.lastIndexOf('}');
+  if (s >= 0 && e > s) {
+    let p = tryParse(body.slice(s, e + 1));
+    if (p !== null) { obj = p; parsed = true; }
+  }
+  if (!parsed) {
+    let s2 = body.indexOf('[');
+    let e2 = body.lastIndexOf(']');
+    if (s2 >= 0 && e2 > s2) {
+      let p = tryParse(body.slice(s2, e2 + 1));
+      if (p !== null) { obj = p; parsed = true; }
+    }
+  }
+}
+
+if (!parsed) $done({});
 
 function isAdNode(node) {
   if (!node || typeof node !== 'object') return false;
