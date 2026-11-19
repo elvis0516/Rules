@@ -1,19 +1,17 @@
-// Reddit 去广告 - script 版 v3.2
-// 处理 gql 响应: JSON / Base64 内嵌 JSON / NDJSON / text/plain 内嵌 JSON 均尝试解析, 移除推广内容
-// 覆盖根路径与 /v2p 等全部路径
+// Reddit 去广告 - 诊断版 v3.3
+// 正常去广告逻辑不变; 若 /v2p 正文无法解析, 把前 400 字节 base64 后放进响应头 X-V2P-Sample 供排查
 let body = $response.body;
 let obj = null;
 let parsed = false;
+let isV2p = ($request.url || '').indexOf('/v2p') !== -1;
 
 function tryParse(s) {
   try { return JSON.parse(s); } catch (e) { return null; }
 }
 
-// 1) 整体按 JSON 解析
 obj = tryParse(body);
 if (obj !== null) parsed = true;
 
-// 2) Base64 解码后再按 JSON 解析
 if (!parsed) {
   try {
     let t = body.trim().replace(/\s+/g, '');
@@ -28,7 +26,6 @@ if (!parsed) {
   } catch (e) {}
 }
 
-// 3) 按行解析 NDJSON
 if (!parsed) {
   let lines = body.split(/\r?\n/);
   let parts = [];
@@ -42,7 +39,6 @@ if (!parsed) {
   if (parts.length > 0) { obj = parts.length === 1 ? parts[0] : parts; parsed = true; }
 }
 
-// 4) 截取首个 { ... } 或 [ ... ] 片段解析
 if (!parsed) {
   let s = body.indexOf('{');
   let e = body.lastIndexOf('}');
@@ -57,6 +53,19 @@ if (!parsed) {
       let p = tryParse(body.slice(s2, e2 + 1));
       if (p !== null) { obj = p; parsed = true; }
     }
+  }
+}
+
+// 诊断: /v2p 解析失败时, 把正文样本放进响应头
+if (!parsed && isV2p) {
+  try {
+    let sample = body.slice(0, 400);
+    let b64 = btoa(unescape(encodeURIComponent(sample)));
+    let headers = $response.headers || {};
+    headers['X-V2P-Sample'] = b64;
+    $done({ headers: headers });
+  } catch (e) {
+    $done({});
   }
 }
 
