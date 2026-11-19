@@ -5,6 +5,11 @@ let obj = null;
 let parsed = false;
 let isV2p = ($request.url || '').indexOf('/v2p') !== -1;
 
+// /v2p 直接返回空对象 (测试: 若首页正常且广告消失, 说明 /v2p 是广告源且非必需)
+if (isV2p) {
+  $done({ body: '{}' });
+}
+
 function tryParse(s) {
   try { return JSON.parse(s); } catch (e) { return null; }
 }
