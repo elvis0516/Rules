@@ -1,5 +1,5 @@
-// Reddit 去广告 - script 版 v3.1
-// 处理 gql 响应: JSON / NDJSON / text/plain 内嵌 JSON 均尝试解析, 移除推广内容
+// Reddit 去广告 - script 版 v3.2
+// 处理 gql 响应: JSON / Base64 内嵌 JSON / NDJSON / text/plain 内嵌 JSON 均尝试解析, 移除推广内容
 // 覆盖根路径与 /v2p 等全部路径
 let body = $response.body;
 let obj = null;
@@ -13,20 +13,36 @@ function tryParse(s) {
 obj = tryParse(body);
 if (obj !== null) parsed = true;
 
-// 2) 按行解析 NDJSON (每行一个 JSON, 取第一个能解析出的对象/数组)
+// 2) Base64 解码后再按 JSON 解析
+if (!parsed) {
+  try {
+    let t = body.trim().replace(/\s+/g, '');
+    if (/^[A-Za-z0-9+/=_-]+$/.test(t) && t.length > 20) {
+      let bin = '';
+      try { bin = atob(t); } catch (e) { bin = ''; }
+      if (bin) {
+        let p = tryParse(bin);
+        if (p !== null) { obj = p; parsed = true; }
+      }
+    }
+  } catch (e) {}
+}
+
+// 3) 按行解析 NDJSON
 if (!parsed) {
   let lines = body.split(/\r?\n/);
   let parts = [];
   for (let ln of lines) {
     let t = ln.trim();
     if (!t) continue;
+    if (t.startsWith('data:')) t = t.slice(5).trim();
     let p = tryParse(t);
     if (p !== null) parts.push(p);
   }
   if (parts.length > 0) { obj = parts.length === 1 ? parts[0] : parts; parsed = true; }
 }
 
-// 3) 截取首个 { ... } 或 [ ... ] 片段解析
+// 4) 截取首个 { ... } 或 [ ... ] 片段解析
 if (!parsed) {
   let s = body.indexOf('{');
   let e = body.lastIndexOf('}');
