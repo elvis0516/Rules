@@ -4,6 +4,12 @@
 let body = $response.body;
 let obj = null;
 let parsed = false;
+let isV2p = ($request.url || '').indexOf('/v2p') !== -1;
+
+// /v2p 无法解析且是滚动加载广告的来源, 直接返回空对象
+if (isV2p) {
+  $done({ body: '{}' });
+}
 
 function tryParse(s) {
   try { return JSON.parse(s); } catch (e) { return null; }
