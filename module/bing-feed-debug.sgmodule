@@ -1,0 +1,6 @@
+#!name=Bing 信息流定位
+#!desc=临时调试用：把 Bing 信息流两个候选域名加进 MITM，便于定位信息流接口与返回格式。定位完成后删除。
+#!author=缪
+
+[MITM]
+hostname = %APPEND% gateway.bingviz.microsoftapp.net, api.msn.com
