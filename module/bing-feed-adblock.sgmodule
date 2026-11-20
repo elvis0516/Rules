@@ -1,0 +1,10 @@
+#!name=Bing 信息流去广告
+#!desc=去掉 Bing App 信息流里的原生广告卡片（Booking.com 等），新闻内容不受影响。原理：拦截信息流接口返回的 JSON，删掉 type 为 nativead 的卡片。
+#!author=缪
+#!icon=https://raw.githubusercontent.com/elvis0516/Rules/main/module/bing-feed-adblock.sgmodule
+
+[Script]
+Bing 信息流去广告 = type=http-response,pattern=^https?://(assets\.msn\.com/service|api\.msn\.com)/news/feed/pages/startmhp,script-path=https://raw.githubusercontent.com/elvis0516/Rules/main/script/bing-feed-adblock-v1.js,requires-body=1
+
+[MITM]
+hostname = %APPEND% assets.msn.com, api.msn.com
