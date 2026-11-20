@@ -1,5 +1,5 @@
-// 瓜子影视（茶器志套壳）去广告：拦截全部广告接口 + AI剧场，返回空数据
-// 目标：api.sef5w7.com 下的广告接口与 AI剧场接口
+// 瓜子影视（茶器志套壳）去广告：拦截全部广告接口，返回空数据
+// 目标：api.sef5w7.com 下的广告接口
 //   /App/ad/config         广告总配置
 //   /App/Ad/skitAdInfo    开屏广告
 //   /App/Ad/splashInfo    开屏广告
@@ -9,10 +9,10 @@
 //   /App/Ad/activityInfo  活动广告
 //   /App/Ad/noticeInfo    通知广告
 //   /App/IndexList/homeFloatAd  首页悬浮广告
-//   /App/IndexList/index  AI剧场与首页共用接口（请求体加密无法区分，拦截后首页列表也可能受影响，待验证）
-// 原理：广告内容由各接口分别返回，ad/config 只是总开关；全部返回空 data，让 App 认为无广告/无内容可展示
+// 注意：/App/IndexList/index 不拦截——AI剧场与首页共用该接口且请求体加密无法区分，v3 实验证实拦了会连首页视频列表一起弄没，已回退。
+// 原理：广告内容由各接口分别返回，ad/config 只是总开关；全部返回空 data，让 App 认为无广告可展示
 const url = $request.url;
-if (/\/App\/(Ad\/|ad\/config|IndexList\/homeFloatAd|IndexList\/index)/.test(url)) {
+if (/\/App\/(Ad\/|ad\/config|IndexList\/homeFloatAd)/.test(url)) {
   $done({response: {status: 200, headers: {'Content-Type': 'application/json; charset=utf-8'}, body: JSON.stringify({code: 200, msg: '请求成功', data: {}})}});
 } else {
   $done({});
