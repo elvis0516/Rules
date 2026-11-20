@@ -1,14 +1,9 @@
-// Reddit 去广告 - 诊断版 v3.3
-// 正常去广告逻辑不变; 若 /v2p 正文无法解析, 把前 400 字节 base64 后放进响应头 X-V2P-Sample 供排查
+// Reddit 去广告 - script 版
+// 处理 gql 响应 (JSON / Base64 内嵌 JSON / NDJSON / 内嵌 JSON), 移除推广内容
+// 覆盖 gql / gql-fed / cf.gql-fed 全部 host 与根路径、/v2p 等全部路径
 let body = $response.body;
 let obj = null;
 let parsed = false;
-let isV2p = ($request.url || '').indexOf('/v2p') !== -1;
-
-// /v2p 直接返回空对象 (测试: 若首页正常且广告消失, 说明 /v2p 是广告源且非必需)
-if (isV2p) {
-  $done({ body: '{}' });
-}
 
 function tryParse(s) {
   try { return JSON.parse(s); } catch (e) { return null; }
@@ -58,19 +53,6 @@ if (!parsed) {
       let p = tryParse(body.slice(s2, e2 + 1));
       if (p !== null) { obj = p; parsed = true; }
     }
-  }
-}
-
-// 诊断: /v2p 解析失败时, 把正文样本放进响应头
-if (!parsed && isV2p) {
-  try {
-    let sample = body.slice(0, 400);
-    let b64 = btoa(unescape(encodeURIComponent(sample)));
-    let headers = $response.headers || {};
-    headers['X-V2P-Sample'] = b64;
-    $done({ headers: headers });
-  } catch (e) {
-    $done({});
   }
 }
 

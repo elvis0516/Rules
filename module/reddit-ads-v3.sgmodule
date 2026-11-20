@@ -14,12 +14,8 @@ hostname = %APPEND%, gql.reddit.com, gql-fed.reddit.com
 
 [Script]
 
-Reddit 去广告 = type=http-response, pattern=^https?:\/\/gql(-fed)?\.reddit\.com\/?.*, script-path=https://raw.githubusercontent.com/elvis0516/Rules/main/script/reddit-ads-v3.js, requires-body=1
-
-[Rule]
-
-URL-REGEX,^https?://gql(-fed)?\.reddit\.com/v2p,REJECT
+Reddit 去广告 = type=http-response, pattern=^https?:\/\/(cf\.)?gql(-fed)?\.reddit\.com\/?.*, script-path=https://raw.githubusercontent.com/elvis0516/Rules/main/script/reddit-ads-v3.js, requires-body=1
 
 [Header Rewrite]
-{{{TRANSLATION}}} ^https:\/\/gql(-fed)?\.reddit\.com\/ header-del x-reddit-translations
-{{{TRANSLATION}}} ^https:\/\/gql(-fed)?\.reddit\.com\/ header-add x-reddit-translations "{{{TRANSLATION_VALUE}}}"
+{{{TRANSLATION}}} ^https:\/\/(cf\.)?gql(-fed)?\.reddit\.com\/ header-del x-reddit-translations
+{{{TRANSLATION}}} ^https:\/\/(cf\.)?gql(-fed)?\.reddit\.com\/ header-add x-reddit-translations "{{{TRANSLATION_VALUE}}}"
