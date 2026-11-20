@@ -1,4 +1,4 @@
-#!name=Reddit 去广告
+#!name=Reddit 去广告-调试
 #!desc=过滤推广, 关 NSFW 提示, 自动开启翻译(脚本版: 覆盖 /v2p 等全部路径, 兼容 text/plain)
 #!category=xream
 #!arguments=NSFW:"Nsfw",TRANSLATION:"http-request",TRANSLATION_VALUE:"enabled, seo, zh-hans"
