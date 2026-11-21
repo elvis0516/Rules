@@ -1,5 +1,5 @@
-# QX 现行配置（脱敏版，同步于 2026-11-05）
-# 来源：2026-11-04 19:40 现行版 + 2026-11-05 两处改动（彩云改走 Rules CYTQVIP、filter_local 加 gather 拦截）
+# QX 现行配置（脱敏版，同步于 2026-11-21）
+# 来源：用户 2026-11-21 22:51 发来的现行版全文（只按结构核对；含 SurgeNewQX 合集、67/68/69 已禁用、filter_local 已加 Bing 行、Spotify ev3 本地重写）
 # 脱敏：[mitm] passphrase / p12 已替换为占位；节点定义在本地 server_remote snippet 文件里，不在本文本内、未同步。
 # 更正（2026-11-05）：彩云 CYTQVIP 行 opt-parser 改回 true——该文件带 /* */ 注释头，仍需资源解析器提取（用户实测）。
 ;预配置作者
@@ -51,8 +51,8 @@ static=🕹 终极清单, direct, proxy, 🌏 国外网站, img-url=https://raw.
 [filter_remote]
 https://github.com/fmz200/wool_scripts/raw/main/QuantumultX/filter/filterFix.list, tag=分流修正, enabled=true
 https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/QuantumultX/Advertising/Advertising.list, tag=🚦去广告, force-policy=🛑 广告拦截, update-interval=172800, opt-parser=true, enabled=true
-https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/QuantumultX/Hijacking/Hijacking.list, tag=🚫 运营商劫持, force-policy=🛑 广告拦截, update-interval=172800, opt-parser=true, enabled=true
 https://raw.githubusercontent.com/elvis0516/Rules/main/filter/rejectAd-dedup.list, tag=奶思去广告去重, force-policy=🛑 广告拦截, update-interval=172800, enabled=true
+https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/QuantumultX/Hijacking/Hijacking.list, tag=🚫 运营商劫持, force-policy=🛑 广告拦截, update-interval=172800, opt-parser=true, enabled=true
 https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/QuantumultX/WeChat/WeChat.list, tag=微信直连, force-policy=direct, update-interval=172800, opt-parser=true, enabled=true
 https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/QuantumultX/OpenAI/OpenAI.list, tag=OpenAI, force-policy=🇯🇵 日本, update-interval=172800, opt-parser=false, enabled=false
 https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/QuantumultX/Google/Google.list, tag=Google, force-policy=🌏 国外网站, update-interval=172800, opt-parser=true, enabled=false
@@ -68,12 +68,16 @@ https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Quant
 https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/QuantumultX/ChinaIPs/ChinaIPs.list, tag=国内IP段, force-policy=direct, update-interval=172800, opt-parser=true, enabled=false
 
 [rewrite_remote]
-https://yfamilys.com/rewrite/CamScanner.conf, tag=扫描全能王, update-interval=172800, opt-parser=true, enabled=false
-https://limbopro.com/Adblock4limbo.conf, tag=毒奶特供(去网页广告计划), update-interval=172800, opt-parser=false, enabled=false
-https://raw.githubusercontent.com/wesselyang/rules/master/plugin/spotify.plugin, tag=Spotify, update-interval=172800, opt-parser=true, enabled=true
+https://raw.githubusercontent.com/elvis0516/Rules/main/rewrite/surge/SurgeNewQX, tag=Surge新增同步, update-interval=172800, opt-parser=true, enabled=true
 https://raw.githubusercontent.com/elvis0516/Rules/main/rewrite/weather/CYTQVIP, tag=彩云SVIP, update-interval=172800, opt-parser=true, enabled=true
 https://raw.githubusercontent.com/89996462/Quantumult-X/main/ycdz/JX.js, tag=简讯VIP, update-interval=172800, opt-parser=true, enabled=true
-https://raw.githubusercontent.com/Peng-YM/Sub-Store/master/config/QX.snippet, tag=Sub-store(高级订阅管理器), update-interval=172800, opt-parser=false, enabled=false
+https://yfamilys.com/rewrite/CamScanner.conf, tag=扫描全能王, update-interval=172800, opt-parser=true, enabled=true
+https://raw.githubusercontent.com/wf021325/qx/master/js/jd_price.js, tag=京东历史比价功能增强@wf021325, update-interval=86400, opt-parser=true, enabled=false
+https://raw.githubusercontent.com/ddgksf2013/Rewrite/refs/heads/master/AdBlock/RedditAds.conf, tag=Reddit去广告@ddgksf2013, update-interval=86400, opt-parser=false, enabled=false
+https://ddgksf2013.top/rewrite/GuaZiVideoAds.conf, tag=瓜子影视去广告@ZenmoFeiShi, update-interval=86400, opt-parser=false, enabled=false
+https://raw.githubusercontent.com/wesselyang/rules/master/plugin/spotify.plugin, tag=Spotify, update-interval=172800, opt-parser=true, enabled=false
+https://limbopro.com/Adblock4limbo.conf, tag=毒奶特供（去网页广告计划）, update-interval=172800, opt-parser=false, enabled=false
+https://raw.githubusercontent.com/Peng-YM/Sub-Store/master/config/QX.snippet, tag=Sub-store（高级订阅管理器）, update-interval=172800, opt-parser=false, enabled=false
 
 [server_local]
 
@@ -88,13 +92,18 @@ ip-cidr, 192.168.0.0/16, direct
 ip-cidr, 224.0.0.0/24, direct
 geoip, cn, direct
 host, gather.colorfulclouds.net, reject
+host, gateway.bingviz.microsoftapp.net, 🔍 Bing
 final, 🕹 终极清单
 
 
 [rewrite_local]
 ^https:\/\/(api|api-cs)\.intsig\.net\/purchase\/cs\/query_property\? url script-response-body https://raw.githubusercontent.com/NobyDa/Script/master/Surge/JS/CamScanner.js
 ^https?:\/\/app\.bilibili\.com\/x\/resource\/fingerprint\? url script-request-header https://raw.githubusercontent.com/ClydeTime/BiliBili/main/js/BiliBiliDailyBonus.js
+^https:\/\/(spclient\.wg\.spotify\.com|.*-spclient\.spotify\.com(:443)?)\/user-customization-service\/v1\/customize$ url request-header (\r\n)if-none-match:.+(\r\n) request-header $1
+^https:\/\/(spclient\.wg\.spotify\.com|.*-spclient\.spotify\.com(:443)?)\/(bootstrap\/v1\/bootstrap|user-customization-service\/v1\/customize)$ url script-response-body https://cdn.jsdelivr.net/gh/Amlabort/MY_clash@main/files/lpx/js/spot-proto-ev3.js
+
 [task_local]
+0 0 1 1 * E5AC2C046881.js, tag=节点连通性检测脚本, enabled=true
 30 7 * * * https://raw.githubusercontent.com/ClydeTime/BiliBili/main/js/BiliBiliDailyBonus.js, tag=B站每日等级任务, img-url=https://raw.githubusercontent.com/HuiDoY/Icon/main/mini/Color/bilibili.png, enabled=true
 [http_backend]
 
@@ -102,4 +111,4 @@ final, 🕹 终极清单
 passphrase = REDACTED
 p12 = REDACTED
 
-hostname = ap*.intsig.net,app.bilibili.com
+hostname = ap*.intsig.net,app.bilibili.com, spclient.wg.spotify.com, *spclient.spotify.com
