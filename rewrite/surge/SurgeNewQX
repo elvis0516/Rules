@@ -1,0 +1,24 @@
+/*************************************
+
+项目名称：Surge 新增功能同步 QX
+来源：Surge 侧 2026-11-20/21 新增的四个去广告/比价功能，移植为 QX 重写
+包含：Reddit 去广告（v17 同款逻辑）/ Bing 信息流去广告 / 瓜子影视去广告 / 京东比价（慢慢买）
+用法：QX [rewrite_remote] 里加下面一行，opt-parser=true；[mitm] hostname 由 QX 自动合并，不用手加
+作者：缪
+
+**************************************/
+
+[rewrite_local]
+# —— Reddit 去广告（QX 版脚本，与 Surge v17 同款：JSON/base64/SSE/multipart/切片五种格式原格式回写） ——
+^https?:\/\/(cf\.)?gql(-fed)?\.reddit\.com\/?.* url script-response-body https://raw.githubusercontent.com/elvis0516/Rules/main/script/reddit-ads-qx.js
+# —— Bing 信息流去广告（删 startmhp 接口返回里的 nativead 卡片，新闻原样保留） ——
+^https?://(assets\.msn\.com/service|api\.msn\.com)/news/feed/pages/startmhp url script-response-body https://raw.githubusercontent.com/elvis0516/Rules/main/script/bing-feed-adblock-v1.js
+# —— 瓜子影视去广告（广告接口直接返回空数据，视频接口不拦截） ——
+^https?://api\.sef5w7\.com/(App/Ad/.*|App/ad/config|App/IndexList/homeFloatAd) url script-echo-response https://raw.githubusercontent.com/elvis0516/Rules/main/script/guazi-adblock-v4.js
+# —— 京东比价（商品详情页注入慢慢买历史价格；打开慢慢买 App 点“我的”抓 ck） ——
+^https?:\/\/in\.m\.jd\.com\/product\/graphext\/\d+\.html url script-response-body https://raw.githubusercontent.com/wf021325/qx/master/js/jd_price.js
+^https?:\/\/apapia-sqk-weblogic\.manmanbuy\.com\/baoliao\/center\/menu$ url script-request-body https://raw.githubusercontent.com/wf021325/qx/master/js/jd_price.js
+
+
+[mitm]
+hostname = gql.reddit.com, gql-fed.reddit.com, *.gql-fed.reddit.com, assets.msn.com, api.msn.com, api.sef5w7.com, in.m.jd.com, apapia-sqk-weblogic.manmanbuy.com
