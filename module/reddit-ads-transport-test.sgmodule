@@ -1,0 +1,11 @@
+#!name=Reddit 去广告-传输测试
+#!desc=传输测试：去掉 force-http-engine-hosts 与 Header Rewrite，只留 MITM（解密用），脚本沿用调试 15（含过滤与标题计数），定位版块列表只剩一条是不是传输层造成的（临时，测完换回正式版）
+#!category=xream
+
+[MITM]
+
+hostname = %APPEND%, gql.reddit.com, gql-fed.reddit.com, *.gql-fed.reddit.com
+
+[Script]
+
+Reddit 去广告 = type=http-response, pattern=^https?:\/\/(cf\.)?gql(-fed)?\.reddit\.com\/?.*, script-path=https://raw.githubusercontent.com/elvis0516/Rules/main/script/reddit-ads-v15-debug.js, requires-body=1
